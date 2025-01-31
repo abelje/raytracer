@@ -2,6 +2,8 @@
 
 #include "color.h"
 #include <vector>
+#include <string>
+#include <algorithm>
 
 //TODO: Implement these functions
 class Pixels {
@@ -21,4 +23,13 @@ public:
     const int columns, rows;
     std::vector<Color> values;
 };
+
+double gamma_correction(double value);
+
+template <class T>
+T to_color(double value) {
+    double clamped = std::clamp(value, 0.0, 0.999); // clamp value in range [0, 1)
+    clamped = gamma_correction(clamped);
+    return static_cast<T>(256*clamped); // scale to 8-bit color value
+}
 

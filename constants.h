@@ -2,6 +2,7 @@
 
 #include <limits>
 #include <numbers>
+#include <cmath>
 
 namespace Constants {
     constexpr double pi = std::numbers::pi;
