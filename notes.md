@@ -137,3 +137,22 @@ void decodeOneStep(const char* filename) {
 This code is from the documentation at: 
 [Example_decode](https://github.com/lvandeve/lodepng/blob/master/examples/example_decode.cpp) \
 I used this code to create a basis for how to use the error readout.
+
+## Gradient
+Previous idea
+```c++
+// for (int i = 0, j = 0; i <= pixels.rows && j <= pixels.columns - 1; ++i) {
+    //     if (i == pixels.rows) {// When the end of the column is reached
+    //         i = 0;
+    //         ++j;
+    //         color.x += .003;
+    //         color.y += .003;
+    //         color.z += .003;
+    //         // fill the first pixel
+    //         pixels(i, j) = color;
+    //     }
+    //     else {
+    //         pixels(i,j) = color;
+    //     }
+    // }
+```

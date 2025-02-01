@@ -16,17 +16,15 @@ Color& Pixels::operator()(int row, int col) {
 }
 
 void Pixels::save_ppm(const std::string& filename) {
-  Pixels pixels(columns, rows);
-  Color& color = pixels(rows, columns);
-  std::ofstream image(filename);
-  for (int j = 0; j < columns; ++j) {
-    for (int i = 0; i < rows; ++i) {
-      auto x = to_color<unsigned>(color.x);
-      auto y = to_color<unsigned>(color.y);
-      auto z = to_color<unsigned>(color.z);
+  std::ofstream output(filename);
+  if (!output) {
+    throw std::runtime_error("Cannot open output file: " + filename);
+  }
+  //Print headers
+  output << "P3" << '\n' << "1280 720" << '\n' << "255\n";
 
-      image << x << ' ' << y << ' ' << z << '\n';
-    }
+  for (auto& c : values) {
+    output << to_color<unsigned>(c.x) << ' ' << to_color<unsigned>(c.y) << ' ' << to_color<unsigned>(c.z) << '\n';
   }
   // use to_color<unsigned>(color.x) for printing RGB values to file
 
@@ -35,34 +33,23 @@ void Pixels::save_ppm(const std::string& filename) {
 }
 
 void Pixels::save_png(const std::string& filename) {
-  // lodepng expects pixels to be in a vector of unsigned char, where
-  // the elements are R, G, B, alpha, R, G, B, alpha, etc.  Use
-  // to_color<unsigned char>(color.x) for putting colors in this
-  // vector, and lodepng::encode(filename, vector, width, height)
-  // (make sure you check the error code returned by this function
-  // using lodepng_error_text(unsigned error)).
-  Pixels pixels(columns, rows);
-  Color& color = pixels(rows, columns);
-  std::ofstream image(filename);
-  std::vector<unsigned char> lode;
-  for (int j = 0; j < columns; ++j) {
-    for (int i = 0; i < rows; ++i) {
-      auto x = to_color<unsigned char>(color.x);
-      lode.push_back(x);
-      auto y = to_color<unsigned char>(color.y);
-      lode.push_back(y);
-      auto z = to_color<unsigned char>(color.z);
-      lode.push_back(z);
-      unsigned error = lodepng::encode(filename, lode, i, j);
-      if (error) {
-        std::cout << "Decoder error: " << lodepng_error_text(error);
-      }
-    }
+  std::ofstream output(filename);
+  if(!output) {
+    throw std::runtime_error("Cannot open output file: " + filename);
   }
-  for (auto i : lode) {
-    image << i << ' ';
+  std::vector<unsigned char> data;
+  for (auto c : values) {
+    data.push_back(to_color<unsigned char>(c.x));
+    data.push_back(to_color<unsigned char>(c.y));
+    data.push_back(to_color<unsigned char>(c.z));
+    data.push_back(255);
+  }
+  unsigned error = lodepng::encode(filename, data, columns,  rows);
+  if (error) {
+    throw std::runtime_error(lodepng_error_text(error));
   }
 }
+
 
 double gamma_correction(double value) {
   // double gamma = 2.2;

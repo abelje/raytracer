@@ -15,12 +15,20 @@ target_link_libraries(test PUBLIC vector3d)
 add_executable(main main.cpp)
 target_link_libraries(main PUBLIC vector3d)
 
-#Colors test code
-add_executable(test-pixels.out
-        test-pixels.cpp
-        pixels.cpp
-        vector3d.cpp
-        lodepng.cpp
-)
-target_compile_options(test-pixels.out PUBLIC -Wall -Wextra -pedantic -ggdb -std=c++17)
-target_link_libraries(test-pixels.out ${SOURCES})
+# png support
+add_library(png lodepng.h lodepng.cpp)
+
+add_library(pixels pixels.h pixels.cpp color.h)
+target_link_libraries(pixels PRIVATE png PUBLIC vector3d)
+
+#testing pixels class
+add_executable(test-pixels test-pixels.cpp)
+target_link_libraries(test-pixels PRIVATE pixels)
+
+# shapes
+add_library(shapes
+    ray.h ray.cpp)
+target_link_libraries(shapes PUBLIC vector3d)
+
+add_executable(test-intersect test-intersect.cpp)
+target_link_libraries(test-intersect PRIVATE shapes)
