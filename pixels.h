@@ -5,7 +5,6 @@
 #include <string>
 #include <algorithm>
 
-//TODO: Implement these functions
 class Pixels {
 public:
     Pixels(int columns, int rows);

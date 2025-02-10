@@ -34,4 +34,4 @@ add_library(shapes
 target_link_libraries(shapes PUBLIC vector3d)
 
 add_executable(test-intersect test-intersect.cpp)
-target_link_libraries(test-intersect PRIVATE shapes)
+target_link_libraries(test-intersect PRIVATE shapes PRIVATE png PUBLIC pixels)

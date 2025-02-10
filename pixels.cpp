@@ -7,11 +7,9 @@ Pixels::Pixels(int columns, int rows)
   :columns{columns}, rows{rows}, values(columns*rows) {}
 
 const Color& Pixels::operator()(int row, int col) const {
-  // TODO: implement me
   return values[row*columns + col];
 }
 Color& Pixels::operator()(int row, int col) {
-  // TODO: implement me
   return values[row*columns + col];
 }
 

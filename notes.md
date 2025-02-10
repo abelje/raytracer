@@ -156,3 +156,27 @@ Previous idea
     //     }
     // }
 ```
+
+```c++
+class A {
+public:
+    int data
+    };
+    main
+    std::optional<double> maybe_num<
+```
+
+
+Test of std::optional
+```c++ 
+std::optional<double> maybe_num{1};
+  if (maybe_num) {
+    std::cout << *maybe_num << '\n'; // maybe_num.value()
+  }
+  else {
+    // std::nullopt
+    std::cout << "nothing\n";
+  }
+```
+
+## Sphere Geometric intersect
