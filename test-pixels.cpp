@@ -4,15 +4,17 @@
 
 // write a function to set all the pixels to the same color
 void set_color(Pixels& pixels, Color color) {
-    for (int i = 0, j = 0; i <= pixels.rows && j <= pixels.columns; ++i) {
-        if (i == pixels.rows) {// When the end of the column is reached
-            i = 0;
-            ++j;
-            // fill the first pixel
-            pixels(i, j) = color;
-        }
-        else {
-            pixels(i,j) = color;
+    for (int i = 0; i <= pixels.rows; ++i) {
+        for (int j = 0; j <= pixels.columns; ++j) {
+            if (i == pixels.rows) {// When the end of the column is reached
+                i = 0;
+                ++j;
+                // fill the first pixel
+                pixels(i, j) = color;
+            }
+            else {
+                pixels(i,j) = color;
+            }
         }
     }
 }

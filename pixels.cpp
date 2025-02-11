@@ -7,10 +7,10 @@ Pixels::Pixels(int columns, int rows)
   :columns{columns}, rows{rows}, values(columns*rows) {}
 
 const Color& Pixels::operator()(int row, int col) const {
-  return values[row*columns + col];
+  return values.at(row*columns + col);
 }
 Color& Pixels::operator()(int row, int col) {
-  return values[row*columns + col];
+  return values.at(row*columns + col);
 }
 
 void Pixels::save_ppm(const std::string& filename) {
