@@ -20,12 +20,13 @@ Camera::Camera(Point3D position, Point3D target, Vector3D up, double fov, double
     // viewport vertical edge
     vertical = v * height;
 
-    upper_left_corner = position + target - (0.5*(horizontal + vertical));
+    upper_left_corner = position + w - (0.5*(horizontal + vertical));
 }
 
+// TODO: Debug this, no tiles are being filled when called
 Ray Camera::compute_ray(double s, double t) const {
     //direction = pixel_center - camera center
     Vector3D direction = upper_left_corner - position;
-    Point3D origin = {s, position.y, t};
+    Point3D origin = {s, 0, t};
     return {origin, direction};
 }
