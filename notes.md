@@ -180,3 +180,137 @@ std::optional<double> maybe_num{1};
 ```
 
 ## Sphere Geometric intersect
+```c++
+std::optional<double> Sphere::intersect(const Ray& ray) const {
+    // if q^2 > r^2 miss
+    auto temp = center - ray.origin;
+    double temp2 = dot(temp, temp);
+    double q2 = -dot(ray.origin, temp) + temp2;
+    if (q2 > radius * radius) {
+        // std::cout << "miss!\n";
+        return std::nullopt;
+    }
+    if (q2 <= radius * radius || q2 + Constants::epsilon < radius * radius
+        || q2 - Constants::epsilon > radius * radius) { // hit
+        // v dot (c - p) - h
+        // h = sqrt(r^2-q^2)
+        return dot(ray.origin, temp) - sqrt(radius * radius - q2);
+    }
+    else {
+        return std::nullopt;
+    }
+}
+```
+
+## Camera Assignment
+Create a Camera class that can position the field of view around our objects.
+
+### Compute Ray
+
+Direction was found in Chapter 4.2 of [Raytracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html#rays,asimplecamera,andbackground/sendingraysintothescene)
+in Listing 9 in the Render section.
+
+```c++
+// Calculate the location of the upper left pixel.
+    auto viewport_upper_left = camera_center
+                             - vec3(0, 0, focal_length) - viewport_u/2 - viewport_v/2;
+    auto pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+// Render
+
+    std::cout << "P3\n" << image_width << " " << image_height << "\n255\n";
+
+    for (int j = 0; j < image_height; j++) {
+        std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
+        for (int i = 0; i < image_width; i++) {
+            auto pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
+            auto ray_direction = pixel_center - camera_center;
+            ray r(camera_center, ray_direction);
+
+            color pixel_color = ray_color(r);
+            write_color(std::cout, pixel_color);
+        }
+    }
+```
+This was used to find the direction of the compute_ray function:
+```c++
+Ray Camera::compute_ray(double s, double t) const {
+    //direction = pixel_center - camera center
+    Vector3D direction = upper_left_corner - position;
+    Point3D origin = {s, position.y, t};
+    return {origin, direction};
+}
+```
+For the origin, s and t reflect the amount that the horizontal and vertical position, so I put that in for x and z.
+
+### Camera Constructor
+
+Chapter 12 of [Raytracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html#positionablecamera/positioningandorientingthecamera)
+helped me to figure out the camera constructor, specifically Listing 82.
+
+```c++
+        center = lookfrom;
+
+// Determine viewport dimensions.
+        auto focal_length = (lookfrom - lookat).length();
+        auto theta = degrees_to_radians(vfov);
+        auto h = std::tan(theta/2);
+        auto viewport_height = 2 * h * focal_length;
+        auto viewport_width = viewport_height * (double(image_width)/image_height);
+
+        // Calculate the u,v,w unit basis vectors for the camera coordinate frame.
+        w = unit_vector(lookfrom - lookat);
+        u = unit_vector(cross(vup, w));
+        v = cross(w, u);
+
+        // Calculate the vectors across the horizontal and down the vertical viewport edges.
+        vec3 viewport_u = viewport_width * u;    // Vector across viewport horizontal edge
+        vec3 viewport_v = viewport_height * -v;  // Vector down viewport vertical edge
+
+        // Calculate the horizontal and vertical delta vectors from pixel to pixel.
+        pixel_delta_u = viewport_u / image_width;
+        pixel_delta_v = viewport_v / image_height;
+
+        // Calculate the location of the upper left pixel.
+        auto viewport_upper_left = center - (focal_length * w) - viewport_u/2 - viewport_v/2;
+        pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+```
+My Code:
+```c++
+Camera::Camera(Point3D position, Point3D target, Vector3D up, double fov, double aspect)
+    : position{position} {
+
+    // w = unit(Point camera is looking from - point camera is looking at)
+    const Vector3D w = unit(position - target);
+    const Vector3D u = unit(cross(up,w));
+    const Vector3D v = cross(w,u);
+
+    const double theta = fov * (Constants::pi / 180.0);
+    const double width = 2 * tan(theta/2);
+
+    // viewport horizontal edge
+    horizontal = u * width;
+
+    double height = width/aspect;
+    // viewport vertical edge
+    vertical = v * height;
+
+    upper_left_corner = position + target - (0.5*(horizontal + vertical));
+}
+```
+
+### Testing the Camera
+Given code for tracing rays through a pixel:
+```c++
+for (int row = 0; row < pixels.rows; ++row) {
+    double v = static_cast<double>(row) / (pixels.rows - 1);
+    for (int col = 0; col < pixels.columns; ++col) {
+        double u = static_cast<double>(col) / (pixels.columns - 1);
+        Ray ray = camera.compute_ray(u, v);
+        // test intersection with a sphere, then color pixels based on
+        // Hit data
+```
+Recommendation: Place two spheres in the scene and color them based on their surface normals, to orient ourselves in 3D.
+
+Requirements: 
+- 3 images where you rotate/translate the camera. Clearly display the values used for each image.
+- 2 images where you modify the field of view

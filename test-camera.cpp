@@ -1,5 +1,6 @@
 #include "camera.h"
 #include "sphere.h"
+#include "pixels.h"
 
 int main() {
     // create spheres, one is small sphere, the other is the ground

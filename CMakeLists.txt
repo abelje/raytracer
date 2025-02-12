@@ -35,3 +35,9 @@ target_link_libraries(shapes PUBLIC vector3d)
 
 add_executable(test-intersect test-intersect.cpp)
 target_link_libraries(test-intersect PRIVATE shapes PRIVATE png PUBLIC pixels)
+
+add_library(camera
+    camera.h camera.cpp)
+
+add_executable(test-camera test-camera.cpp)
+target_link_libraries(test-camera PRIVATE camera PRIVATE shapes PRIVATE png PUBLIC pixels)

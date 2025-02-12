@@ -13,6 +13,9 @@ public:
     Ray compute_ray(double s, double t) const;
 
 private:
+    // position is where the camera is located
+    // upper_left_corner is the top left corner of the viewport
     Point3D position, upper_left_corner;
+    // the horizontal and vertical sides of the viewport
     Vector3D horizontal, vertical;
 };
