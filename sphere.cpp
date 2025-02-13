@@ -13,29 +13,35 @@ std::optional<double> Sphere::aintersect(const Ray& ray) const {
     // ray.origin - center;
     //if b^2-4ac is 0, 1 hit
     // if it is positive, 2 hits
+    Vector3D oc = ray.origin - center;
     double a = dot(ray.direction, ray.direction);
-    double b = 2 * dot(ray.direction, ray.origin - center);
-    double c = dot(ray.origin - center, ray.origin - center) - (radius * radius);
+    double b = 2 * dot(ray.direction, oc);
+    double c = dot(oc, oc) - (radius * radius);
     double discriminant = (b*b) - (4*a*c);
-    if (discriminant < 0 + Constants::epsilon && discriminant > 0 - Constants::epsilon) {
-        // std::cout << "Hit ";
-        // (-b +- discriminant) / 2a
-        return -b + discriminant / (2 * a);
+
+    // There are only 3 options:
+    // disc < -eps        => miss
+    // -eps < disc < +eps => one hit
+    // disc > +eps        => two hits, return closer one
+
+    if (discriminant < -Constants::epsilon) {
+        // Miss
+        return std::nullopt;
     }
-    else if (discriminant > 0 - Constants::epsilon) {
-        // std::cout << "Hit ";
-        return -b - discriminant / (2 * a);
+
+    if (-Constants::epsilon < discriminant < Constants::epsilon) {
+        // one hit
+        return (-b + std::sqrt(discriminant)) + (-b - std::sqrt(discriminant)) / (2 * a);
     }
-    else if (discriminant == 0) {
-        // std::cout << "Hit ";
-        return -b + (discriminant / (2 * a));
-    }
-    else if (discriminant > 0) { //ray intersects the sphere
-        // std::cout << "Hit ";
-        return -b + (discriminant / (2 * a));
+
+    if (discriminant > Constants::epsilon) {
+        // two hits, return closer one
+        double hit_1 = b - std::sqrt(discriminant)/(2 * a);
+        double hit_2 = b + std::sqrt(discriminant)/(2*a);
+        double hit = std::min(std::abs(hit_1), std::abs(hit_2));
+        return hit;
     }
     else {
-        // std::cout << "Miss! ";
         return std::nullopt;
     }
 }
@@ -49,11 +55,23 @@ std::optional<double> Sphere::intersect(const Ray& ray) const {
         // std::cout << "miss!\n";
         return std::nullopt;
     }
-    if (q2 <= radius * radius || q2 + Constants::epsilon < radius * radius
-        || q2 - Constants::epsilon > radius * radius) { // hit
+
+    if (q2 < -Constants::epsilon) {
+        // miss
+        return std::nullopt;
+    }
+
+    if (q2 - Constants::epsilon <= radius * radius < q2 + Constants::epsilon) {
         // v dot (c - p) - h
         // h = sqrt(r^2-q^2)
         return dot(ray.origin, temp) - sqrt(radius * radius - q2);
+    }
+    if (q2 <= radius * radius + Constants::epsilon) {
+        //two hits, return closer one
+        double hit_1 = dot(ray.origin, temp) - sqrt(radius * radius - q2);
+        double hit_2 = dot(ray.origin, temp) + sqrt(radius * radius - q2);
+        double hit = std::min(std::abs(hit_1), std::abs(hit_2));
+        return hit;
     }
     else {
         return std::nullopt;

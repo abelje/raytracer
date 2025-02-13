@@ -17,31 +17,31 @@ int main() {
   //   std::cout << length(P - ray1.origin) << '\n';
   // }
 
-  Sphere sphere {{0,2,0}, 1};
+  Sphere sphere {{0,0,0}, 10};
   // Ray ray1 {{0, 0, 0}, {0,1,0}}; // 1 hit
-  Ray ray2 {{0,2,0}, {0,1,0}}; // 2 hits
+  Ray ray2 {{0,0,0}, {1,1,1}}; // 2 hits
   std::cout << ray2 << '\n';
   std::optional<double> dis;
   std::optional<double> g_dis;
   double a_elapsed = 0;
   double g_elapsed = 0;
-  for (int i = 0; i < 1000; ++i) {
+  for (int i = 0; i < 10; ++i) {
     Timer algebraic;
     algebraic.start();
     dis = sphere.aintersect(ray2);
-    // std::cout << *dis << '\n';
+    std::cout << dis.value() << '\n';
     a_elapsed += algebraic.stop();
     // std::cout << "Time: " << a_elapsed << '\n';
     Timer geometric;
     geometric.start();
     g_dis = sphere.intersect(ray2);
-    // std::cout << *g_dis << '\n';
+    std::cout << "G: " << g_dis.value() << '\n';
     g_elapsed += geometric.stop();
     // std::cout << "Time(g): " << g_elapsed << '\n';
   }
-  g_elapsed /= 1000;
+  g_elapsed /= 10;
   std::cout <<"Average Time for geometric: " <<  g_elapsed << '\n';
-  a_elapsed /= 1000;
+  a_elapsed /= 10;
   std::cout << "Average Time for algebraic: " <<  a_elapsed << '\n';
 
 
