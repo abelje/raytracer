@@ -17,10 +17,11 @@ int main() {
   //   std::cout << length(P - ray1.origin) << '\n';
   // }
 
-  Sphere sphere {{0,0,0}, 10};
+  Sphere sphere {{0,0,0}, 2};
   // Ray ray1 {{0, 0, 0}, {0,1,0}}; // 1 hit
-  Ray ray2 {{0,0,0}, {1,1,1}}; // 2 hits
+  Ray ray2 {{0, 0, 0}, {0,1,0}}; // 2 hits
   std::cout << ray2 << '\n';
+  std::cout << sphere.center << '\n';
   std::optional<double> dis;
   std::optional<double> g_dis;
   double a_elapsed = 0;
@@ -29,7 +30,7 @@ int main() {
     Timer algebraic;
     algebraic.start();
     dis = sphere.aintersect(ray2);
-    std::cout << dis.value() << '\n';
+    std::cout << "A: " <<  dis.value() << '\n';
     a_elapsed += algebraic.stop();
     // std::cout << "Time: " << a_elapsed << '\n';
     Timer geometric;

@@ -13,11 +13,17 @@ std::optional<double> Sphere::aintersect(const Ray& ray) const {
     // ray.origin - center;
     //if b^2-4ac is 0, 1 hit
     // if it is positive, 2 hits
-    Vector3D oc = ray.origin - center;
-    double a = dot(ray.direction, ray.direction);
-    double b = 2 * dot(ray.direction, oc);
-    double c = dot(oc, oc) - (radius * radius);
-    double discriminant = (b*b) - (4*a*c);
+    // Vector3D oc = ray.origin - center;
+    // double a = dot(ray.direction, ray.direction);
+    // double b = 2 * dot(ray.direction, oc);
+    // double c = dot(oc, oc) - (radius * radius);
+    // double discriminant = (b*b) - (4*a*c);
+
+    Vector3D oc = center - ray.origin;
+    auto a = length(ray.direction) * length(ray.direction);
+    auto h = dot(ray.direction, oc);
+    auto c = length(oc) * length(oc) - radius*radius;
+    auto discriminant = h*h - a*c;
 
     // There are only 3 options:
     // disc < -eps        => miss
@@ -29,21 +35,21 @@ std::optional<double> Sphere::aintersect(const Ray& ray) const {
         return std::nullopt;
     }
 
-    if (-Constants::epsilon < discriminant < Constants::epsilon) {
+    // if (-Constants::epsilon < discriminant) {
         // one hit
-        return (-b + std::sqrt(discriminant)) + (-b - std::sqrt(discriminant)) / (2 * a);
-    }
+        return (h - std::sqrt(discriminant)) / a;
+    // }
 
-    if (discriminant > Constants::epsilon) {
-        // two hits, return closer one
-        double hit_1 = b - std::sqrt(discriminant)/(2 * a);
-        double hit_2 = b + std::sqrt(discriminant)/(2*a);
-        double hit = std::min(std::abs(hit_1), std::abs(hit_2));
-        return hit;
-    }
-    else {
-        return std::nullopt;
-    }
+    // if (discriminant > Constants::epsilon) {
+    //     // two hits, return closer one
+    //     double hit_1 = (-b - std::sqrt(discriminant)) / (2 * a);
+    //     double hit_2 = (-b + std::sqrt(discriminant)) / (2 * a);
+    //     double hit = std::min(std::abs(hit_1), std::abs(hit_2));
+    //     return hit;
+    // }
+    // else {
+    //     return std::nullopt;
+    // }
 }
 
 std::optional<double> Sphere::intersect(const Ray& ray) const {

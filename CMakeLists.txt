@@ -41,3 +41,9 @@ add_library(camera
 
 add_executable(test-camera test-camera.cpp)
 target_link_libraries(test-camera PRIVATE camera PRIVATE shapes PRIVATE png PUBLIC pixels)
+
+add_library(world
+    world.h world.cpp)
+
+add_executable(test-world test-world.cpp)
+target_link_libraries(test-world PRIVATE camera PRIVATE world PRIVATE shapes PRIVATE png PUBLIC pixels)

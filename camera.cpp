@@ -28,6 +28,8 @@ Ray Camera::compute_ray(double s, double t) const {
     Vector3D direction = upper_left_corner - position;
     direction += (horizontal * s);
     direction += (vertical * t);
-    // Point3D origin = {position.x * s, 0, position.z * t};
-    return {position, direction};
+    return {position, unit(direction)};
+    // Vector3D direction = upper_left_corner - position;
+    // Point3D origin = {s, 0, t};
+    // return {origin, direction};
 }
