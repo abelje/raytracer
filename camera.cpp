@@ -6,7 +6,7 @@ Camera::Camera(Point3D position, Point3D target, Vector3D up, double fov, double
     : position{position} {
 
     // w = unit(Point camera is looking from - point camera is looking at)
-    const Vector3D w = unit(position - target);
+    const Vector3D w = unit(target - position); // target - position
     const Vector3D u = unit(cross(up,w));
     const Vector3D v = cross(w,u);
 

@@ -7,78 +7,44 @@ Pixels generate_spheres(const Sphere& sphere, const Sphere& ground, const Camera
 
 int main() {
     // create spheres, one is small sphere, the other is the ground
-    Sphere ground{{0, 0, -25}, 26};
-    Sphere sphere{{0,0, 0}, 1};
+    Sphere ground{{0, 0, -100}, 100};
+    Sphere sphere{{0,0, 0}, 15};
 
     //image size
     Pixels pixels {1280, 720};
 
     //create the camera
-    Vector3D position{0, -5, 0}, up{0,0,1};
-    Vector3D target{0, 0, 0};
+    Vector3D position{0, -10, 0}, up{0,0,1};
+    Vector3D target = sphere.center;
     double aspect_ratio = static_cast<double>(pixels.columns)/pixels.rows;
 
     //test 1 camera
     Camera camera{position, target, up, 90, aspect_ratio};
 
-    // World world;
-    // world.add(sphere.center,  sphere.radius);
-    // world.add(ground.center,  ground.radius);
-
     for (int row = 0; row < pixels.rows; ++row) {
         double v = static_cast<double>(row) / (pixels.rows - 1);
         for (int col = 0; col < pixels.columns; ++col) {
             double u = static_cast<double>(col) / (pixels.columns - 1);
             Ray ray = camera.compute_ray(u, v);
-            // Ray ray2 = camera.compute_ray(u, v);
             // test intersection with a sphere, then color pixels based on Hit data
-            // std::optional<double> time = sphere.intersect(ray);
-            std::optional<double> time2 = ground.intersect(ray);
+            std::optional<double> stime = sphere.intersect(ray);
+            std::optional<double> gtime = ground.intersect(ray);
 
-            if (time2) {
-                Hit hit2 = ground.construct_hit(ray, time2.value());
-                double shading = std::abs(dot(ray.direction, hit2.normal));
-                // hit2.normal.x *= shading;
-                hit2.normal.y *= shading;
-                pixels(row, col) = hit2.normal;
-            }
-
-            // if (time) {
-            //     // std::cout << "1";
-            //     Hit hit = sphere.construct_hit(ray2, time.value());
-            //     pixels(row, col) = hit.normal;
-            // }
-
-        }
-    }
-
-    for (int row = 0; row < pixels.rows; ++row) {
-        double v = static_cast<double>(row) / (pixels.rows - 1);
-        for (int col = 0; col < pixels.columns; ++col) {
-            double u = static_cast<double>(col) / (pixels.columns - 1);
-            Ray ray = camera.compute_ray(u, v);
-            Ray ray2 = camera.compute_ray(u, v);
-            // test intersection with a sphere, then color pixels based on Hit data
-            std::optional<double> time = sphere.intersect(ray);
-            // std::optional<double> time2 = ground.intersect(ray);
-
-            // if (time2) {
-            //     Hit hit2 = ground.construct_hit(ray, time2.value());
-            //     double shading = std::abs(dot(ray.direction, hit2.normal));
+            // if (gtime) {
+            //     Hit hit2 = ground.construct_hit(ray, gtime.value());
+            //     // double shading = std::abs(dot(ray.direction, hit2.normal));
             //     // hit2.normal.x *= shading;
-            //     hit2.normal.y *= shading;
+            //     // hit2.normal.y *= shading;
             //     pixels(row, col) = hit2.normal;
             // }
 
-            if (time) {
+            if (stime) {
                 // std::cout << "1";
-                Hit hit = sphere.construct_hit(ray2, time.value());
+                Hit hit = sphere.construct_hit(ray, stime.value());
                 pixels(row, col) = hit.normal;
             }
-
         }
     }
-
 
 
     std::string filename = "test.png";

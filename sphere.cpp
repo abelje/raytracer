@@ -54,34 +54,35 @@ std::optional<double> Sphere::aintersect(const Ray& ray) const {
 
 std::optional<double> Sphere::intersect(const Ray& ray) const {
     // if q^2 > r^2 miss
-    auto temp = center - ray.origin;
-    double temp2 = dot(temp, temp);
-    double q2 = -dot(ray.origin, temp) + temp2;
-    if (q2 > radius * radius) {
+    auto oc = center - ray.origin;
+    double R = dot(ray.origin, oc);
+    double q2 = dot(oc, oc) - R * R;
+    double r2 = radius * radius;
+
+    if (q2 > r2 + Constants::epsilon) {
         // std::cout << "miss!\n";
         return std::nullopt;
     }
 
-    if (q2 < -Constants::epsilon) {
-        // miss
-        return std::nullopt;
+    double h2 = r2 - q2;
+    double sqrth2 = std::sqrt(h2);
+
+    if (std::abs(q2-r2) < Constants::epsilon) {
+        return R;
+    }
+    // two hits straight through, return closer hit. Need to handle if it starts inside the circle.
+    double hit_1 = R - sqrth2;
+    double hit_2 = R + sqrth2;
+    if (hit_1 >= 0) {
+        return hit_1;
     }
 
-    if (q2 - Constants::epsilon <= radius * radius < q2 + Constants::epsilon) {
-        // v dot (c - p) - h
-        // h = sqrt(r^2-q^2)
-        return dot(ray.origin, temp) - sqrt(radius * radius - q2);
+    if (hit_2 >= 0) {
+        return hit_2;
     }
-    if (q2 <= radius * radius + Constants::epsilon) {
-        //two hits, return closer one
-        double hit_1 = dot(ray.origin, temp) - sqrt(radius * radius - q2);
-        double hit_2 = dot(ray.origin, temp) + sqrt(radius * radius - q2);
-        double hit = std::min(std::abs(hit_1), std::abs(hit_2));
-        return hit;
-    }
-    else {
-        return std::nullopt;
-    }
+
+    // everything is behind the ray
+    return std::nullopt;
 }
 
 

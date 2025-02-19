@@ -47,3 +47,6 @@ add_library(world
 
 add_executable(test-world test-world.cpp)
 target_link_libraries(test-world PRIVATE camera PRIVATE world PRIVATE shapes PRIVATE png PUBLIC pixels)
+
+add_executable(test-random test-random.cpp random.h random.cpp)
+
