@@ -42,10 +42,13 @@ add_library(camera
 add_executable(test-camera test-camera.cpp)
 target_link_libraries(test-camera PRIVATE camera PRIVATE shapes PRIVATE png PUBLIC pixels)
 
+add_executable(test-camera-individual test-camera-individual.cpp)
+target_link_libraries(test-camera-individual PRIVATE camera PRIVATE shapes PRIVATE png PUBLIC pixels)
+
 add_library(world
     world.h world.cpp)
 
-add_executable(test-world test-world.cpp)
+add_executable(test-world test-world.cpp random.h random.cpp)
 target_link_libraries(test-world PRIVATE camera PRIVATE world PRIVATE shapes PRIVATE png PUBLIC pixels)
 
 add_executable(test-random test-random.cpp random.h random.cpp)

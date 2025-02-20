@@ -4,7 +4,7 @@
 double random_double() {
     // static means it runs globally once
     static std::random_device rd;
-    static std::mt19937 engine{0}; // rd()
+    static std::mt19937 engine{rd()}; // 0
     static std::uniform_real_distribution<double> distribution{0, 1};
     return distribution(engine);
 }

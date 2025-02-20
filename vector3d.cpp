@@ -119,11 +119,12 @@ double length(const Vector3D& v) {
 }
 
 Vector3D unit(const Vector3D& v) {
-    if (length(v) == 0) {
+    double l = length(v);
+    if (l == 0) {
         throw std::overflow_error("Unit Length = 0!");
     }
-    double b{1/length(v)};
-    return Vector3D{b, b, b};
+
+    return Vector3D{v.x/l, v.y/l, v.z/l};
 }
 
 std::ostream& operator<<(std::ostream& os, const Vector3D& v) {

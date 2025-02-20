@@ -5,6 +5,7 @@
 #include "pixels.h"
 #include "ray.h"
 #include "hit.h"
+#include "random.h"
 #include "world.h"
 
 
@@ -26,14 +27,19 @@ int main() {
     double fov{20};
     double aspect = static_cast<double>(pixels.columns) / pixels.rows;
     Camera camera{position, target, up, fov, aspect};
-  
+
+	constexpr int samples = 10;
     for (auto row = 0; row < pixels.rows; ++row) {
-	double y = static_cast<double>(row) / (pixels.rows - 1);
-	for (auto col = 0; col < pixels.columns; ++col) {
-	    double x = static_cast<double>(col) / (pixels.columns - 1);
-	    Ray ray = camera.compute_ray(x, y);
-	    pixels(row, col) = trace(world, ray);
-	}
+		for (auto col = 0; col < pixels.columns; ++col) {
+			for (int N = 0; N < samples; ++N) {
+				double y = (row + random_double()) / (pixels.rows - 1);
+				double x = (col + random_double()) / (pixels.columns - 1);
+				// cast samples number of rays
+				Ray ray = camera.compute_ray(x, y);
+				pixels(row, col) += trace(world, ray);
+			}
+			pixels(row, col) /= samples;
+		}
     }
     std::string filename{"sphere.png"};
     pixels.save_png(filename);

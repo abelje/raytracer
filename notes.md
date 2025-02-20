@@ -314,3 +314,6 @@ Recommendation: Place two spheres in the scene and color them based on their sur
 Requirements: 
 - 3 images where you rotate/translate the camera. Clearly display the values used for each image.
 - 2 images where you modify the field of view
+Finally finished issues that I had:
+- unit() was wrong
+- intersect was slightly wrong

@@ -11,7 +11,7 @@ std::optional<Hit> World::find_nearest(const Ray& ray) const {
     Sphere* nearest = nullptr;
     for (const auto& object : objects) {
       std::optional<double> t = object->intersect(ray);
-      if(t.value() && t.value() < time) {
+      if(t.has_value() && t.value() < time) {
       	nearest = object.get();
         time = t.value();
       }

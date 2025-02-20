@@ -7,7 +7,7 @@ Camera::Camera(Point3D position, Point3D target, Vector3D up, double fov, double
 
     // w = unit(Point camera is looking from - point camera is looking at)
     const Vector3D w = unit(target - position); // target - position
-    const Vector3D u = unit(cross(up,w));
+    const Vector3D u = unit(cross(w, up));
     const Vector3D v = cross(w,u);
 
     const double theta = fov * (Constants::pi / 180.0);
@@ -20,16 +20,10 @@ Camera::Camera(Point3D position, Point3D target, Vector3D up, double fov, double
     // viewport vertical edge
     vertical = v * height;
 
-    upper_left_corner = position + w - (0.5*(horizontal + vertical));
+    upper_left_corner = position + w - (0.5 * horizontal) - (0.5 * vertical);
 }
 
 Ray Camera::compute_ray(double s, double t) const {
-    //direction = pixel_center - camera center
-    Vector3D direction = upper_left_corner - position;
-    direction += (horizontal * s);
-    direction += (vertical * t);
+    Vector3D direction = upper_left_corner + (horizontal * s) + (vertical * t) - position;
     return {position, unit(direction)};
-    // Vector3D direction = upper_left_corner - position;
-    // Point3D origin = {s, 0, t};
-    // return {origin, direction};
 }

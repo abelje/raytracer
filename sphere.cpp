@@ -1,5 +1,7 @@
 #include "sphere.h"
 
+#include "ray.h"
+
 #include <complex>
 #include <math.h>
 
@@ -55,7 +57,7 @@ std::optional<double> Sphere::aintersect(const Ray& ray) const {
 std::optional<double> Sphere::intersect(const Ray& ray) const {
     // if q^2 > r^2 miss
     auto oc = center - ray.origin;
-    double R = dot(ray.origin, oc);
+    double R = dot(ray.direction, oc);
     double q2 = dot(oc, oc) - R * R;
     double r2 = radius * radius;
 
@@ -65,14 +67,16 @@ std::optional<double> Sphere::intersect(const Ray& ray) const {
     }
 
     double h2 = r2 - q2;
-    double sqrth2 = std::sqrt(h2);
+    double h = std::sqrt(h2);
 
     if (std::abs(q2-r2) < Constants::epsilon) {
-        return R;
+        if (R >= 0) {
+            return R;
+        }
     }
     // two hits straight through, return closer hit. Need to handle if it starts inside the circle.
-    double hit_1 = R - sqrth2;
-    double hit_2 = R + sqrth2;
+    double hit_1 = R - h;
+    double hit_2 = R + h;
     if (hit_1 >= 0) {
         return hit_1;
     }
