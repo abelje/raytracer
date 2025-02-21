@@ -11,7 +11,6 @@ public:
 
     virtual Ray scatter(const Ray& ray, const Hit& hit) const = 0;
 
-private:
     std::string name;
     Color color;
     bool emitting;

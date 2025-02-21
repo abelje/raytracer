@@ -9,7 +9,7 @@ class Material;
 
 class Sphere {
 public:
-    Sphere(const Point3D& center, double radius);
+    Sphere(const Point3D& center, double radius, const Material* material = nullptr);
 
     // returns the distance if the ray intersects this sphere, otherwise std::nullopt
     std::optional<double> aintersect(const Ray& ray) const;
@@ -19,5 +19,5 @@ public:
     Point3D center;
     double radius;
 
-    // Material* material;
+    const Material* material;
 };

@@ -7,8 +7,8 @@
 
 #include "constants.h"
 
-Sphere::Sphere(const Point3D& center, double radius)
-    :center{center}, radius{radius} {}
+Sphere::Sphere(const Point3D& center, double radius, const Material* material)
+    :center{center}, radius{radius}, material{material} {}
 
 std::optional<double> Sphere::aintersect(const Ray& ray) const {
     //Insert origin ray in |P-C|^2 = r^2
@@ -94,6 +94,6 @@ Hit Sphere::construct_hit(const Ray& ray, double time) const {
     // calculate the surface normal
     Point3D point = ray.at(time);
     Vector3D normal = (point - center) / radius;
-    return Hit{time, point, normal};
+    return Hit{time, point, normal, this};
 }
 

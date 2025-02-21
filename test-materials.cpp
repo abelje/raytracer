@@ -1,0 +1,89 @@
+#include "camera.h"
+#include "sphere.h"
+#include "color.h"
+#include "constants.h"
+#include "pixels.h"
+#include "ray.h"
+#include "hit.h"
+#include "random.h"
+#include "world.h"
+#include "diffuse.h"
+
+
+Color trace(const World& world, const Ray& ray);
+Color trace_path(const World& world, const Ray& ray, int depth);
+
+int main() {
+    // materials
+    Diffuse red{{1, 0, 0}, false};
+    Diffuse gray{{0.5, 0.5, 0.5}, false};
+    Diffuse light{{1, 1, 1}, true};
+
+    // world
+    World world;
+    world.add({0, 0, 0}, 0.3, &red);
+    world.add({1, 0, 0}, 0.3, &red);
+    world.add({0,0, -100}, 100, &gray);
+    world.add({1200, 1100, 0}, 1000, &light);
+    //world.add({0, 0, 0}, 100, &light);
+
+
+    // specify the number of pixels
+    Pixels pixels{1280, 720};
+
+    // create the camera
+    Vector3D position{10, -2, 3}, up{0, 0, 1};
+    Vector3D target{0, 0, 0};
+    double fov{20};
+    double aspect = static_cast<double>(pixels.columns) / pixels.rows;
+    Camera camera{position, target, up, fov, aspect};
+
+    constexpr int samples = 10;
+    constexpr int ray_depth = 5;
+    for (auto row = 0; row < pixels.rows; ++row) {
+        for (auto col = 0; col < pixels.columns; ++col) {
+            for (int N = 0; N < samples; ++N) {
+                double y = (row + random_double()) / (pixels.rows - 1);
+                double x = (col + random_double()) / (pixels.columns - 1);
+                // cast samples number of rays
+                Ray ray = camera.compute_ray(x, y);
+                pixels(row, col) += trace_path(world, ray, ray_depth);
+            }
+            pixels(row, col) /= samples;
+        }
+    }
+    std::string filename{"sphere1.png"};
+    pixels.save_png(filename);
+    std::cout << "Wrote " << filename << '\n';
+}
+
+Color trace(const World& world, const Ray& ray) {
+    std::optional<Hit> hit = world.find_nearest(ray);
+    if (hit.has_value()) {
+        return hit->normal;
+    }
+    else {
+        return Black;
+    }
+}
+
+Color trace_path(const World& world, const Ray& ray, int depth) {
+    if (depth == 0) {
+        return Black;
+    }
+
+    std::optional<Hit> hit = world.find_nearest(ray);
+    if (!hit) {
+        return Blue; //out of color palatte, so its an obvious edge case
+        // artifacts?
+    }
+
+    const Material* material = hit->sphere->material;
+    if (material->emitting) {
+        return material->color;
+    }
+
+    //more bounces!
+    Ray scattered = material->scatter(ray, hit.value());
+    return material->color * trace_path(world, scattered, depth-1);
+}

@@ -53,3 +53,8 @@ target_link_libraries(test-world PRIVATE camera PRIVATE world PRIVATE shapes PRI
 
 add_executable(test-random test-random.cpp random.h random.cpp)
 
+# test materials
+add_executable(test-materials test-materials.cpp
+        world.h world.cpp camera.h camera.cpp random.h random.cpp material.h material.cpp diffuse.h diffuse.cpp)
+target_link_libraries(test-materials PRIVATE pixels shapes)
+
