@@ -1,3 +1,5 @@
+#include <iomanip>
+
 #include "camera.h"
 #include "sphere.h"
 #include "color.h"
@@ -12,6 +14,7 @@
 
 Color trace(const World& world, const Ray& ray);
 Color trace_path(const World& world, const Ray& ray, int depth);
+void print_progress(long long ray_num, long long total_rays);
 
 int main() {
     // materials
@@ -24,8 +27,8 @@ int main() {
     world.add({0, 0, 0}, 0.3, &red);
     world.add({1, 0, 0}, 0.3, &red);
     world.add({0,0, -100}, 100, &gray);
-    world.add({1200, 1100, 0}, 1000, &light);
-    //world.add({0, 0, 0}, 100, &light);
+    //world.add({1200, 1100, 0}, 1000, &light);
+    world.add({0, 0, 0}, 100, &light);
 
 
     // specify the number of pixels
@@ -40,6 +43,11 @@ int main() {
 
     constexpr int samples = 10;
     constexpr int ray_depth = 5;
+
+
+    const long long rays_total = pixels.rows* pixels.columns * static_cast<long long>(samples);
+    long long ray_num = 0;
+
     for (auto row = 0; row < pixels.rows; ++row) {
         for (auto col = 0; col < pixels.columns; ++col) {
             for (int N = 0; N < samples; ++N) {
@@ -48,6 +56,11 @@ int main() {
                 // cast samples number of rays
                 Ray ray = camera.compute_ray(x, y);
                 pixels(row, col) += trace_path(world, ray, ray_depth);
+
+                ++ray_num;
+                if (ray_num % (rays_total / 100) == 0) {
+                    print_progress(ray_num, rays_total);
+                }
             }
             pixels(row, col) /= samples;
         }
@@ -86,4 +99,13 @@ Color trace_path(const World& world, const Ray& ray, int depth) {
     //more bounces!
     Ray scattered = material->scatter(ray, hit.value());
     return material->color * trace_path(world, scattered, depth-1);
+}
+
+void print_progress(long long ray_num, long long total_rays) {
+    auto width = std::to_string(total_rays).length() + 4;
+    int percentage = std::round(static_cast<double>(ray_num) / total_rays * 100);
+
+    std::cout << "\rProgram:" << std::setw(3) << percentage << "%";
+    std::cout << std::setw(width) << ray_num << '/' << total_rays << " rays";
+    std::cout << std::flush;
 }
