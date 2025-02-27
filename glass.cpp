@@ -17,7 +17,7 @@ Ray Glass::scatter(const Ray& ray, const Hit& hit) const {
 
     Vector3D normal = hit.normal;
 
-    if (dot(ray.direction, hit.normal) > 0)) {
+    if (dot(ray.direction, hit.normal) > 0) {
         normal *= -1;
         std::swap(n1, n2);
     }

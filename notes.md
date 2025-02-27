@@ -317,3 +317,13 @@ Requirements:
 Finally finished issues that I had:
 - unit() was wrong
 - intersect was slightly wrong
+
+### Testing speed of programs
+- Download Debian on wsl through command prompt
+- Download perf-linux using code:
+sudo apt install linux-perf
+- Open Clion
+- alt + f12 to open terminal
+- open a debian terminal (might have to set up a toolchain for it in terminal in settings)
+- to test time elapsed use: 
+perf stat -e cpu-clock ./test-materials.exe
