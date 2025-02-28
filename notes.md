@@ -325,5 +325,6 @@ sudo apt install linux-perf
 - Open Clion
 - alt + f12 to open terminal
 - open a debian terminal (might have to set up a toolchain for it in terminal in settings)
-- to test time elapsed use: 
+- to test time elapsed use:
+(will probably have to use "cd cmake-build-debug" first to change directory) \
 perf stat -e cpu-clock ./test-materials.exe

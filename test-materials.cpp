@@ -10,21 +10,26 @@
 #include "random.h"
 #include "world.h"
 #include "diffuse.h"
+#include "glass.h"
 
 
 Color trace(const World& world, const Ray& ray);
 Color trace_path(const World& world, const Ray& ray, int depth);
 void print_progress(long long ray_num, long long total_rays);
 
+void in_class();
+void test_all();
+
 int main() {
     // materials
     Diffuse red{{1, 0, 0}, false};
     Diffuse gray{{0.5, 0.5, 0.5}, false};
     Diffuse light{{1, 1, 1}, true};
+    Glass glass {{1,1,1}, false};
 
     // world
     World world;
-    world.add({0, 0, 0}, 0.3, &red);
+    world.add({0, 0, 0}, 0.3, &glass);
     world.add({1, 0, 0}, 0.3, &red);
     world.add({0,0, -100}, 100, &gray);
     //world.add({1200, 1100, 0}, 1000, &light);
@@ -41,7 +46,7 @@ int main() {
     double aspect = static_cast<double>(pixels.columns) / pixels.rows;
     Camera camera{position, target, up, fov, aspect};
 
-    constexpr int samples = 10;
+    constexpr int samples = 1000;
     constexpr int ray_depth = 5;
 
 
@@ -108,4 +113,8 @@ void print_progress(long long ray_num, long long total_rays) {
     std::cout << "\rProgram:" << std::setw(3) << percentage << "%";
     std::cout << std::setw(width) << ray_num << '/' << total_rays << " rays";
     std::cout << std::flush;
+}
+
+void in_class() {
+
 }

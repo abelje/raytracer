@@ -1,0 +1,16 @@
+# materials
+material red diffuse (1 0 0) false
+material light diffuse (1 1 1) true
+material floor diffuse (0.8 0.8 0.8) false
+
+# floor
+sphere (0 0 -1000) 1000 floor
+
+# spheres
+sphere (0 0 1) 1 red
+
+# rendering
+rays 10 100
+camera (10 -2 3) (0 0 1) (0 0 1) 20
+pixels 1280 720
+output sphere.png
