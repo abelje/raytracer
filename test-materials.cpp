@@ -24,36 +24,33 @@ void in_class();
 void test_all();
 
 int main() {
-    // in_class();
-
     // materials
-    Diffuse ground {Gray, false};
     Diffuse blue{Blue, false};
     Lambertian lime{Lime, false};
     Specular purple{Purple, false};
-    Metallic bronze{Orange, false, 0.5};
+    Metallic orange{Orange, false, 0.1};
     Diffuse light{White, true};
 
     // world
     World world;
-    world.add({0, 0, 0.5}, 0.3, &blue);
-    world.add({2, 0.5, 0.5}, 0.3, &lime);
-    world.add({2, -1, 0.5}, 0.3, &purple);
-    world.add({2.75, -0.5, 0.5}, 0.3, &bronze);
-    world.add({0,0, -100}, 100, &ground);
-    world.add({0, 0, 0}, 100, &light);
+    world.add({0, 0, 0.5}, 0.3, &purple); //purple
+    world.add({2, 0.5, 0.5}, 0.3, &orange); //orange
+    world.add({2, -1, 0.5}, 0.3, &lime);
+    world.add({2.75, -0.5, 0.5}, 0.3, &blue);
+    world.add({10, -2, 2.5}, 100, &light);
 
     // specify the number of pixels
     Pixels pixels{1280, 720};
 
     // Set up camera
-    Vector3D position{10, -2, 3}, up{0, 0, 1};
+    Vector3D position{10, -2, 2.5}, up{0, 0, 1};
     Vector3D target{0, 0, 0};
     double fov{20};
     double aspect = static_cast<double>(pixels.columns) / pixels.rows;
     Camera camera{position, target, up, fov, aspect};
 
-    constexpr int samples = 10000;
+    // when switching between 100 and 1000 samples, reflections of the specular sphere seem to be less
+    constexpr int samples = 1000;
     constexpr int ray_depth = 5;
 
     const long long rays_total = pixels.rows* pixels.columns * static_cast<long long>(samples);
@@ -80,6 +77,7 @@ int main() {
     std::string filename{"spheres-test.png"};
     pixels.save_png(filename);
     std::cout << "Wrote " << filename << '\n';
+
 }
 
 Color trace(const World& world, const Ray& ray) {
@@ -173,6 +171,63 @@ void in_class() {
         }
     }
     std::string filename{"sphere1.png"};
+    pixels.save_png(filename);
+    std::cout << "Wrote " << filename << '\n';
+}
+
+void test_all() {
+    // materials
+    Diffuse ground {Gray, false};
+    Diffuse blue{Blue, false};
+    Lambertian lime{Lime, false};
+    Specular purple{Purple, false};
+    Metallic bronze{Orange, false, 0.5};
+    Diffuse light{White, true};
+
+    // world
+    World world;
+    world.add({0, 0, 0.5}, 0.3, &blue);
+    world.add({2, 0.5, 0.5}, 0.3, &lime);
+    world.add({2, -1, 0.5}, 0.3, &purple);
+    world.add({2.75, -0.5, 0.5}, 0.3, &bronze);
+    world.add({0,0, -100}, 100, &ground);
+    world.add({0, 0, 0}, 100, &light);
+
+    // specify the number of pixels
+    Pixels pixels{1280, 720};
+
+    // Set up camera
+    Vector3D position{10, -2, 3}, up{0, 0, 1};
+    Vector3D target{0, 0, 0};
+    double fov{20};
+    double aspect = static_cast<double>(pixels.columns) / pixels.rows;
+    Camera camera{position, target, up, fov, aspect};
+
+    constexpr int samples = 10000;
+    constexpr int ray_depth = 5;
+
+    const long long rays_total = pixels.rows* pixels.columns * static_cast<long long>(samples);
+    long long ray_num = 0;
+
+    for (auto row = 0; row < pixels.rows; ++row) {
+        for (auto col = 0; col < pixels.columns; ++col) {
+            for (int N = 0; N < samples; ++N) {
+                double y = (row + random_double()) / (pixels.rows - 1);
+                double x = (col + random_double()) / (pixels.columns - 1);
+                // cast samples number of rays
+                Ray ray = camera.compute_ray(x, y);
+                pixels(row, col) += trace_path(world, ray, ray_depth);
+
+                ++ray_num;
+                if (ray_num % (rays_total / 100) == 0) {
+                    print_progress(ray_num, rays_total);
+                }
+            }
+            pixels(row, col) /= samples;
+        }
+    }
+
+    std::string filename{"spheres-test.png"};
     pixels.save_png(filename);
     std::cout << "Wrote " << filename << '\n';
 }
