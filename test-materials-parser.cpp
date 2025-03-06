@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
 
     std::string filename{parser.filename};
     pixels.save_png(filename);
-    std::cout << "Wrote " << filename << '\n';
+    std::cout << "\nWrote " << filename << '\n';
 
 }
 

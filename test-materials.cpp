@@ -25,7 +25,7 @@ void test_all();
 
 int main() {
     // materials
-    Diffuse blue{Blue, false};
+    Diffuse red{Red, false};
     Lambertian lime{Lime, false};
     Specular purple{Purple, false};
     Metallic orange{Orange, false, 0.1};
@@ -36,7 +36,7 @@ int main() {
     world.add({0, 0, 0.5}, 0.3, &purple); //purple
     world.add({2, 0.5, 0.5}, 0.3, &orange); //orange
     world.add({2, -1, 0.5}, 0.3, &lime);
-    world.add({2.75, -0.5, 0.5}, 0.3, &blue);
+    world.add({2.75, -0.5, 0.5}, 0.3, &red);
     world.add({10, -2, 2.5}, 100, &light);
 
     // specify the number of pixels

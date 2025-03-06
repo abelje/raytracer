@@ -328,3 +328,15 @@ sudo apt install linux-perf
 - to test time elapsed use:
 (will probably have to use "cd cmake-build-debug" first to change directory) \
 perf stat -e cpu-clock ./test-materials.exe
+
+Use perf record ./cmake-build-debug/test-materials-parser.exe  input
+perf report for stats
+
+### Making materials
+To make a material, you need a name for the material, color, and what it is emitting. The easiest example is diffuse:
+
+## Parser
+./cmake-build-debug/test-materials-parser.exe  input
+
+Problem with colors: Too saturated, use numbers from 0 to 1
+

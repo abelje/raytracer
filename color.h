@@ -13,15 +13,15 @@ const Color Lightgray = {0.8, 0.8, 0.8};
 const Color Red = {1, 0, 0};
 const Color Orange = {1, 0.5, 0};
 
-const Color Yellow = {255, 255, 0};
-const Color Blue = {0, 0, 255};
-const Color Green = {0, 128, 0};
-const Color Purple = {128, 0, 128};
-const Color Sky_Blue = {135, 206, 235};
-const Color Lime = {0, 255, 0};
+const Color Yellow = {1.0, 1.0, 0.0};
+const Color Blue = {0.0, 0.0, 1.0};
+const Color Green = {0.0, 0.5, 0.0};
+const Color Purple = {0.5, 0.0, 0.5};
+const Color Sky_Blue = {0.53, 0.81, 0.92};
+const Color Lime = {0.0, 1.0, 0.0};
 
-const Color Sun = {255, 232, 124};
-const Color Fuschia = {255, 0, 255};
-const Color Fire = {168, 5, 5};
-const Color Bronze = {206, 137, 70};
-const Color Iron = {212, 215,217};
+const Color Sun = {1.0, 0.91, 0.49};
+const Color Fuschia = {1.0, 0.0, 1.0};
+const Color Fire = {0.66, 0.02, 0.02};
+const Color Bronze = {0.81, 0.54, 0.27};
+const Color Iron = {0.83, 0.84, 0.85};

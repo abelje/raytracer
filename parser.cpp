@@ -10,6 +10,10 @@
 #include <iostream>
 #include <sstream>
 
+#include "glass.h"
+#include "lambertian.h"
+#include "specular.h"
+
 Parser::Parser(const std::string& filename)
     :filename{filename} {
   std::ifstream input{filename};
@@ -101,7 +105,7 @@ void Parser::parse_material(std::stringstream& ss) {
   if (kind == "diffuse") {
     materials[name] = std::make_unique<Diffuse>(color, emitting);
   }
-  else if (kind == "metal") { //needs fuzz value
+  else if (kind == "metallic") { //needs fuzz value
     double fuzz;
     if (ss >> fuzz) { // fuzz exists
       materials[name] = std::make_unique<Metallic>(color, emitting, fuzz);
@@ -109,6 +113,18 @@ void Parser::parse_material(std::stringstream& ss) {
     else {
       throw std::runtime_error("Missing parameter 'fuzz' for material: " + name);
     }
+  }
+
+  else if (kind == "specular") {
+    materials[name] = std::make_unique<Specular>(color, emitting);
+  }
+
+  else if (kind == "lambertian") {
+    materials[name] = std::make_unique<Lambertian>(color, emitting);
+  }
+
+  else if (kind == "glass") {
+    materials[name] = std::make_unique<Glass>(color, emitting);
   }
 
   else {
