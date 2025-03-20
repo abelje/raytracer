@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.30)
 project(raytracer)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # adjust any compiler settings
 add_compile_options(-g -Wall -Wextra -pedantic -std=c++20 -O3 -lto) #-flto -O3

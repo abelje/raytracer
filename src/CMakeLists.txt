@@ -1,6 +1,6 @@
 add_subdirectory(core)
-#add_subdirectory(image)
-#add_subdirectory(objects)
+add_subdirectory(image)
+add_subdirectory(objects)
 add_subdirectory(materials)
 
 add_library(raytracer

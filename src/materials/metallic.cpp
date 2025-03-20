@@ -12,6 +12,6 @@ Metallic::Metallic(Color color, bool emitting, double fuzz)
 
 Ray Metallic::scatter(const Ray& ray, const Hit& hit) const {
     Vector3D reflected = reflect(ray.direction, hit.normal);
-    reflected = unit(reflected) + (fuzz * random_unit_vector());
+    reflected += fuzz * random_unit_vector();
     return Ray{hit.position, reflected};
 }

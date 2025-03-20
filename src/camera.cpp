@@ -25,5 +25,5 @@ Camera::Camera(Point3D position, Point3D target, Vector3D up, double fov, double
 
 Ray Camera::compute_ray(double s, double t) const {
     Vector3D direction = upper_left_corner + (horizontal * s) + (vertical * t) - position;
-    return {position, unit(direction)};
+    return {position, direction};
 }
