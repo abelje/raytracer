@@ -14,7 +14,7 @@ sphere (-2 0 1) 1 green
 # light
 sphere (0 20 1020) 1000 light
 # rendering
-rays 10 10
+rays 10 100
 camera (4 -8 4) (0 0 1) (0 0 1) 90
 pixels 1280 720
 output performance.png

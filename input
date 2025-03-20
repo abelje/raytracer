@@ -11,7 +11,7 @@ sphere (0 0 1) 1 red
 sphere (2 -2 1) 1 glass
 sphere (-2 0 1) 1 green
 # light
-sphere (0 20 1020) 1000 light
+sphere (0 0 0) 1000 light
 # rendering
 rays 10 500
 camera (4 -8 4) (0 0 1) (0 0 1) 90
