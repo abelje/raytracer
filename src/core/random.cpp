@@ -10,8 +10,8 @@ double random_double() {
     // static std::uniform_real_distribution<double> distribution{0, 1};
     // return distribution(engine);
     static std::random_device rd;
-    static Xorshiftrplus xorshiro256{rd()};
-    return xorshiro256.random_double();
+    static Xorshiro256 xorshiro256{rd()};
+    return xorshiro256.next_double();
 }
 
 double random_double(double min, double max) {
