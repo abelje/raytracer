@@ -2,12 +2,13 @@
 
 #include "point3d.h"
 #include "hit.h"
-#include <vector>
-#include <memory>
 #include <optional>
+#include <memory>
+#include <vector>
 
-class Sphere;
+
 class Ray;
+class Object;
 class Material;
 
 class World {

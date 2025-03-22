@@ -1,6 +1,8 @@
 #include "world.h"
-#include "sphere.h"
+
 #include "constants.h"
+#include "object.h"
+#include "sphere.h"
 
 void World::add(Point3D center, double radius, const Material* material) {
   objects.push_back(std::make_unique<Sphere>(center, radius, material));

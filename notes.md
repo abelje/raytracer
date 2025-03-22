@@ -340,3 +340,11 @@ To make a material, you need a name for the material, color, and what it is emit
 
 Problem with colors: Too saturated, use numbers from 0 to 1
 
+## UV Mapping (Textures) - 03/21
+Texture: (u,v)-> color
+
+pair<double,d> Object::uv(Hit) // Hit has pos, object*, normal
+
+Sphere(u,v) 
+
+Theta = [0, pi] around a circle

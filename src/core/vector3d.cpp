@@ -1,7 +1,7 @@
 #include "vector3d.h"
 #include "constants.h"
+#include <cmath>
 #include <iostream>
-#include <valarray>
 
 Vector3D::Vector3D()
     :x{0.0}, y{0.0}, z{0.0} {}
@@ -29,7 +29,7 @@ Vector3D& Vector3D::operator*=(const Vector3D& rhs) {
     z *= rhs.z;
     return *this;
 }
-  
+
 Vector3D& Vector3D::operator*=(const double scalar) {
     x *= scalar;
     y *= scalar;
@@ -39,12 +39,9 @@ Vector3D& Vector3D::operator*=(const double scalar) {
 
 Vector3D& Vector3D::operator/=(const double scalar) {
     if (scalar == 0) {
-        throw std::overflow_error("Division by zero!");
+        throw std::overflow_error("Attempt to divide by zero");
     }
-    x /= scalar;
-    y /= scalar;
-    z /= scalar;
-    return *this;
+    return *this *= 1/scalar;
 }
 
 bool almost_equal(double x, double y) {
@@ -86,8 +83,7 @@ Vector3D operator*(Vector3D lhs, const double scalar) {
 }
 
 Vector3D operator*(const double scalar, Vector3D rhs) {
-    rhs *= scalar;
-    return rhs;
+    return rhs * scalar;
 }
 
 Vector3D operator/(Vector3D lhs, const double scalar) {
@@ -95,7 +91,7 @@ Vector3D operator/(Vector3D lhs, const double scalar) {
     return lhs;
 }
 
-Vector3D pow(Vector3D v, const double n) { // not sure if the set 'v.? =' is necessary
+Vector3D pow(Vector3D v, const double n) {
     v.x = std::pow(v.x, n);
     v.y = std::pow(v.y, n);
     v.z = std::pow(v.z, n);
@@ -103,19 +99,18 @@ Vector3D pow(Vector3D v, const double n) { // not sure if the set 'v.? =' is nec
 }
 
 double dot(const Vector3D& a, const Vector3D& b) {
-    return a.x * b.x + a.y * b.y + a.z * b.z;
+    return a.x*b.x + a.y*b.y + a.z*b.z;
 }
-  
+
 Vector3D cross(const Vector3D& a, const Vector3D& b) {
-    double x = a.y * b.z - a.z * b.y;
-    double y = a.z * b.x - a.x * b.z;
-    double z = a.x * b.y - a.y * b.x;
+    double x = a.y*b.z - a.z*b.y;
+    double y = a.z*b.x - a.x*b.z;
+    double z = a.x*b.y - a.y*b.x;
     return Vector3D{x, y, z};
 }
-  
+
 double length(const Vector3D& v) {
-    // distance formula
-    return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+    return std::sqrt(dot(v, v));
 }
 
 Vector3D unit(const Vector3D& v) {

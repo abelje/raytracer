@@ -3,7 +3,7 @@
 #include "ray.h"
 
 #include <complex>
-#include <math.h>
+#include <cmath>
 
 #include "constants.h"
 
@@ -55,38 +55,29 @@ std::optional<double> Sphere::aintersect(const Ray& ray) const {
 }
 
 std::optional<double> Sphere::intersect(const Ray& ray) const {
-    // if q^2 > r^2 miss
-    auto oc = center - ray.origin;
-    double R = dot(ray.direction, oc);
-    double q2 = dot(oc, oc) - R * R;
-    double r2 = radius * radius;
-
-    if (q2 > r2 + Constants::epsilon) {
-        // std::cout << "miss!\n";
-        return std::nullopt;
+    Vector3D OC = center - ray.origin;
+    double R = dot(ray.direction, OC);
+    double h2 = radius*radius - dot(OC, OC) + R*R;
+    if (h2 < 0) {
+        return {};
     }
 
-    double h2 = r2 - q2;
     double h = std::sqrt(h2);
 
-    if (std::abs(q2-r2) < Constants::epsilon) {
-        if (R >= 0) {
-            return R;
-        }
+    // time = R +/- h
+    if ((R-h) > Constants::epsilon) {
+        // ray intersects from outside sphere -> R-h is closer to ray origin
+        // if time is positive and futher away than Epsilon
+        return R-h;
     }
-    // two hits straight through, return closer hit. Need to handle if it starts inside the circle.
-    double hit_1 = R - h;
-    double hit_2 = R + h;
-    if (hit_1 >= 0) {
-        return hit_1;
+    else if ((R+h) > Constants::epsilon) {
+        // ray intersections from inside sphere -> R+h is in the direction of the ray
+        // time is positive and further away than Epsilon
+        return R+h;
     }
-
-    if (hit_2 >= 0) {
-        return hit_2;
+    else {
+        return {};
     }
-
-    // everything is behind the ray
-    return std::nullopt;
 }
 
 

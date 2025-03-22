@@ -4,10 +4,8 @@
 #include <map>
 #include <memory>
 #include "world.h"
-
 class Camera;
 class Pixels;
-class World;
 class Material;
 
 using Materials = std::map<std::string, std::unique_ptr<Material>>;
@@ -36,6 +34,7 @@ private:
     void parse_pixels(std::stringstream& ss);
     void parse_output(std::stringstream& ss);
 
+
     World world;
 
     Materials materials;
@@ -43,8 +42,7 @@ private:
     Point3D camera_position, camera_target;
     Vector3D camera_up;
     double camera_fov, aspect;
-    bool found_camera;
-
-    bool found_pixels;
     int rows, columns;
+
+    bool found_camera, found_pixels, found_output, found_rays;
 };

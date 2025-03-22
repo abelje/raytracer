@@ -1,8 +1,9 @@
 #pragma once
-#include <optional>
 
 #include "point3d.h"
 #include "hit.h"
+#include "object.h"
+#include <optional>
 
 class Ray;
 class Material;
