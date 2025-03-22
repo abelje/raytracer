@@ -349,6 +349,9 @@ Sphere(u,v)
 
 Theta = [0, pi] around a circle
 
+## Xoshiro256+
+[Original](https://xoshiro.di.unimi.it/xoshiro256plus.c)
+
 ## Setting up Object class
 To set up the overarching object class, there are some edits that we have to make to the codebase.
 ```c++
