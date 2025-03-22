@@ -7,9 +7,10 @@ add_library(core
         point3d.h
         random.h random.cpp
         xorshiro256.h xorshiro256.cpp
+        xorshiftrplus.h xorshiftrplus.cpp
         ray.h ray.cpp
         vector3d.h vector3d.cpp
-        xorshiftrplus.h xorshiftrplus.cpp
+        timer.h timer.cpp
 )
 
 target_include_directories(core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

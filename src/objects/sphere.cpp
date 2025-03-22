@@ -1,14 +1,10 @@
 #include "sphere.h"
-
 #include "ray.h"
-
-#include <complex>
+#include "constants.h"
 #include <cmath>
 
-#include "constants.h"
-
 Sphere::Sphere(const Point3D& center, double radius, const Material* material)
-    :center{center}, radius{radius}, material{material} {}
+    :Object{material}, center{center}, radius{radius} {}
 
 std::optional<double> Sphere::aintersect(const Ray& ray) const {
     //Insert origin ray in |P-C|^2 = r^2

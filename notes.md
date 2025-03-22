@@ -348,3 +348,42 @@ pair<double,d> Object::uv(Hit) // Hit has pos, object*, normal
 Sphere(u,v) 
 
 Theta = [0, pi] around a circle
+
+## Setting up Object class
+To set up the overarching object class, there are some edits that we have to make to the codebase.
+```c++
+std::optional<Hit> World::find_nearest(const Ray& ray) const {
+    double time = Constants::infinity;
+    Object* nearest = nullptr;
+    for (const auto& object : objects) {
+        std::optional<double> t = object->intersect(ray);
+        if (t.has_value() && t.value() < time) {
+            nearest = object.get();
+            time = t.value();
+        }
+    }
+    if (nearest) {
+        Hit hit = nearest->construct_hit(ray, time);
+        return hit;
+    }
+    else {
+        return {};
+    }
+}
+```
+
+```c++
+void Parser::parse_sphere(std::stringstream& ss) {
+    Vector3D center;
+    double radius;
+    std::string material_name;
+    if (ss >> center >> radius >> material_name) {
+        const Material* material = get_material(material_name);
+        std::unique_ptr<Object> object = std::make_unique<Sphere>(center, radius, material);
+        world.add(std::move(object));
+    }
+    else {
+        throw std::runtime_error("Malformed sphere");
+    }
+}
+```

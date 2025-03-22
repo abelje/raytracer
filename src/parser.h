@@ -4,6 +4,7 @@
 #include <map>
 #include <memory>
 #include "world.h"
+
 class Camera;
 class Pixels;
 class Material;

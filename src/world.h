@@ -13,8 +13,8 @@ class Material;
 
 class World {
 public:
-  void add(Point3D center, double radius, const Material* material=nullptr);
+  void add(std::unique_ptr<Object>&& object);
   std::optional<Hit> find_nearest(const Ray& ray) const;
 
-  std::vector<std::unique_ptr<Sphere>> objects;
+  std::vector<std::unique_ptr<Object>> objects;
 };

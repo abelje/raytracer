@@ -157,17 +157,17 @@ Material* Parser::get_material(const std::string& material) {
 }
 
 void Parser::parse_sphere(std::stringstream& ss) {
-  Vector3D center;
-  double radius;
-  std::string material_name;
-
-  if(ss >> center >> radius >> material_name) {
-    const Material* material = get_material(material_name);
-    world.add(center, radius, material);
-  }
-  else {
-    throw std::runtime_error("Malformed sphere");
-  }
+    Vector3D center;
+    double radius;
+    std::string material_name;
+    if (ss >> center >> radius >> material_name) {
+        const Material* material = get_material(material_name);
+        std::unique_ptr<Object> object = std::make_unique<Sphere>(center, radius, material);
+        world.add(std::move(object));
+    }
+    else {
+        throw std::runtime_error("Malformed sphere");
+    }
 }
 void Parser::parse_camera(std::stringstream& ss) {
     if (ss >> camera_position >> camera_target >> camera_up >> camera_fov) {
