@@ -1,5 +1,6 @@
+# Line of Spheres for textures
 # materials
-material red metallic (1 0 0) false 0.2
+material red lambertian (1 0 0) false
 material bronze metallic (0.81 0.54 0.27) false 0.2
 material light diffuse (1 1 1) true
 material floor lambertian (0.8 0.8 0.8) false
@@ -11,16 +12,16 @@ material blue lambertian (0.53 0.81 0.92) false
 sphere (0 0 -1000) 1000 floor
 # spheres
 sphere (0 0 1) 1 bronze
-sphere (2 -2 1) 1 glass
-sphere (5 -4 1) 1 blue
-sphere (-2.5 0 1.5) 1 green
-sphere (0 5 1) 1 grey
-sphere (5 3 2) 1 grey
+sphere (2.5 0 1) 1 glass
+sphere (5 0 1) 1 blue
+sphere (-2.5 0 1) 1 green
+sphere (7.5 0 1) 1 grey
+sphere (-5 0 1) 1 grey
 # light
 sphere (4 -9 4) 1000 light
 # rendering
 threads 8
 rays 10 100
-camera (4 -8 4) (0 0 1) (0 0 1) 90
+camera (2 -8 4) (1.5 0 1) (0 0 1) 90
 pixels 1280 720
-output spheres.png
+output textures.png
