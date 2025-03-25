@@ -8,6 +8,7 @@ class Ray;
 class Material {
 public:
     Material(std::string name, Color color, bool emitting);
+    // Material(Texture* texture, bool emitting)
 
     virtual Ray scatter(const Ray& ray, const Hit& hit) const = 0;
     virtual ~Material() = default;

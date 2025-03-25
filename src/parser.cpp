@@ -80,6 +80,9 @@ void Parser::parse(std::ifstream& input) {
             else if (type == "rays") {
                 parse_rays(ss);
             }
+            else if (type == "threads") {
+                parse_threads(ss);
+            }
             else {
                 throw std::runtime_error("Uknown type: " + type + " in line " + line);
             }
@@ -194,5 +197,11 @@ void Parser::parse_pixels(std::stringstream& ss) {
 void Parser::parse_output(std::stringstream& ss) {
     if (ss >> filename) {
         found_output = true;
+    }
+}
+
+void Parser::parse_threads(std::stringstream& ss) {
+    if (!(ss>>num_threads)) {
+        throw std::runtime_error("Missing number of threads");
     }
 }

@@ -16,9 +16,6 @@ Color trace(const World& world, const Ray& ray);
 Color trace_path(const World& world, const Ray& ray, int depth);
 void print_progress(long long ray_num, long long total_rays);
 
-void in_class();
-void test_all();
-
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         std::cout << "Usage: " << argv[0] << " {filename}\n";
@@ -96,7 +93,7 @@ void print_progress(long long ray_num, long long total_rays) {
     auto width = std::to_string(total_rays).length() + 4;
     int percentage = std::round(static_cast<double>(ray_num) / total_rays * 100);
 
-    std::cout << "\rProgram:" << std::setw(3) << percentage << "%";
+    std::cout << "\rTest Materials Program:" << std::setw(3) << percentage << "%";
     std::cout << std::setw(width) << ray_num << '/' << total_rays << " rays";
     std::cout << std::flush;
 }

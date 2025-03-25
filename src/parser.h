@@ -20,7 +20,7 @@ public:
     World get_world();
 
     std::string filename;
-    int ray_depth, ray_samples;
+    int ray_depth, ray_samples, num_threads=1;
 
 private:
 
@@ -34,7 +34,7 @@ private:
     void parse_rays(std::stringstream& ss);
     void parse_pixels(std::stringstream& ss);
     void parse_output(std::stringstream& ss);
-
+    void parse_threads(std::stringstream& ss);
 
     World world;
 

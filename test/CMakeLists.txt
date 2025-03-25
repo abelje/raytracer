@@ -33,3 +33,5 @@ target_link_libraries(test-materials PRIVATE raytracer)
 add_executable(test-materials-parser test-materials-parser.cpp)
 target_link_libraries(test-materials-parser PRIVATE raytracer)
 
+add_executable(test-textures test-textures.cpp)
+target_link_libraries(test-textures PRIVATE raytracer)

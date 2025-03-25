@@ -5,7 +5,9 @@
 
 double random_double() {
     static std::random_device rd;
-    static Xorshiro256 xorshiro256{rd()};
+    // static thread_local Xorshiftrplus gen(rd());
+    // return gen.random_double();
+    static thread_local Xorshiro256 xorshiro256{rd()};
     return xorshiro256.next_double();
 }
 
