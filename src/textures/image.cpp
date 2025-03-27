@@ -11,8 +11,8 @@ Color Image::value(double u, double v) const {
     u = std::clamp(u, 0.0, 1.0);
     v = std::clamp(v, 0.0, 1.0);
 
-    auto row = int(u * pixels.columns);
-    auto col = int(v * pixels.rows);
+    auto col = int(u * pixels.columns);
+    auto row = int(v * pixels.rows);
 
     int index = row * pixels.columns + col;
     auto pixel = pixels.values[index];
