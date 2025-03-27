@@ -10,6 +10,7 @@
 #include "specular.h"
 #include "texture.h"
 #include "solid.h"
+#include "image.h"
 #include <algorithm>
 #include <iostream>
 #include <fstream>
@@ -183,7 +184,13 @@ void Parser::parse_texture(std::stringstream& ss) {
 
     }
     else if (kind == "image") {
-
+        std::string filename;
+        if (ss >> filename) {
+            textures[name] = std::make_unique<Image>(filename);
+        }
+        else {
+            throw std::runtime_error("Missing filename for " + kind + " texture: " + name);
+        }
     }
     else if (kind == "checkerboard") {
 

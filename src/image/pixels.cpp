@@ -6,6 +6,24 @@
 Pixels::Pixels(int columns, int rows)
   :columns{columns}, rows{rows}, values(columns*rows) {}
 
+Pixels::Pixels(const std::string& filename) {
+  std::vector<unsigned char> data;
+  unsigned width, height;
+  unsigned error = lodepng::decode(data, width, height, filename);
+  if (error) {
+    throw std::runtime_error(lodepng_error_text(error));
+  }
+  rows = height;
+  columns = width;
+  for (int i = 0; i < rows * columns; ++i) {
+    int n = 4 * i;
+    double r = static_cast<double>(data.at(n)) / 255;
+    double g = static_cast<double>(data.at(n + 1)) / 255;
+    double b = static_cast<double>(data.at(n + 2)) / 255;
+    values.push_back({r, g, b});
+  }
+}
+
 const Color& Pixels::operator()(int row, int col) const {
   return values.at(row*columns + col);
 }

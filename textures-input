@@ -8,10 +8,11 @@ texture glass solid (1 1 1)
 texture green solid (0 1 0)
 texture grey solid (0.5 0.5 0.5)
 texture skyblue solid (0.53 0.81 0.92)
+texture earth image earthmap.png
 
 # materials
 material red lambertian red false
-material bronze metallic bronze false 0.2
+material bronze diffuse earth false
 material light diffuse light true
 material floor lambertian floor false
 material glass glass glass false
