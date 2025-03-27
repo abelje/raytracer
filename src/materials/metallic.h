@@ -4,7 +4,7 @@
 
 class Metallic : public Material {
 public:
-    Metallic(Color color, bool emitting, double fuzz);
+    Metallic(const Texture* texture, bool emitting, double fuzz);
 
     Ray scatter(const Ray& ray, const Hit& hit) const override;
 

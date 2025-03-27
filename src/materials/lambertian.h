@@ -4,7 +4,7 @@
 
 class Lambertian : public Material {
 public:
-    Lambertian(Color color, bool emitting);
+    Lambertian(const Texture* texture, bool emitting);
 
     Ray scatter(const Ray& ray, const Hit& hit) const override;
 };

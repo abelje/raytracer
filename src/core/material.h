@@ -4,17 +4,17 @@
 
 class Hit;
 class Ray;
+class Texture;
 
 class Material {
 public:
-    Material(std::string name, Color color, bool emitting);
-    // Material(Texture* texture, bool emitting)
+    Material(const Texture* texture , bool emitting, std::string name = " ");
 
     virtual Ray scatter(const Ray& ray, const Hit& hit) const = 0;
     virtual ~Material() = default;
 
     std::string name;
-    Color color;
+    const Texture* texture;
     bool emitting;
 };
 

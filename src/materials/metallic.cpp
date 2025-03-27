@@ -3,8 +3,8 @@
 #include "random.h"
 #include "hit.h"
 
-Metallic::Metallic(Color color, bool emitting, double fuzz)
-    : Material("Metallic", color, emitting), fuzz(fuzz) {
+Metallic::Metallic(const Texture* texture, bool emitting, double fuzz)
+    : Material(texture, emitting, "Metallic"), fuzz(fuzz) {
     if (fuzz > 1 || fuzz < 0) {
         throw std::runtime_error("Fuzz value must be in the range [0,1]");
     }

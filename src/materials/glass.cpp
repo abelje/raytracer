@@ -1,15 +1,11 @@
-//
-// Created by abelj on 2/26/2025.
-//
-
 #include "glass.h"
 #include "ray.h"
 #include "hit.h"
 #include "random.h"
 #include <algorithm>
 
-Glass::Glass(Color color, bool emitting)
-    :Material{"glass",color,emitting} {}
+Glass::Glass(const Texture* texture, bool emitting)
+    :Material{texture,emitting,"Glass"} {}
 
 Ray Glass::scatter(const Ray& ray, const Hit& hit) const {
     double n1 = 1.0;

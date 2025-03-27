@@ -11,6 +11,7 @@ add_library(core
         ray.h ray.cpp
         vector3d.h vector3d.cpp
         timer.h timer.cpp
+        texture.h texture.cpp
 )
 
 target_include_directories(core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

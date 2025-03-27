@@ -3,8 +3,8 @@
 #include "random.h"
 #include "hit.h"
 
-Lambertian::Lambertian(Color color, bool emitting)
-    : Material("Lambertian", color, emitting) {}
+Lambertian::Lambertian(const Texture* texture, bool emitting)
+    : Material(texture, emitting, "Lambertian") {}
 
 Ray Lambertian::scatter(const Ray& ray, const Hit& hit) const {
     Vector3D scattered = hit.normal + random_unit_vector();

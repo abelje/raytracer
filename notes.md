@@ -423,3 +423,10 @@ public:
 Sphere::Sphere(const Point3D& center, double radius, const Material* material)
     :Object{material}, center{center}, radius{radius} {}
 ```
+
+## Threading
+open mp parallel
+
+open mpi
+
+## Textures Assignment 

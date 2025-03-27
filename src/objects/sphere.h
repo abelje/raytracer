@@ -17,6 +17,7 @@ public:
     std::optional<double> intersect(const Ray& ray) const override;
 
     Hit construct_hit(const Ray& ray, double time) const override;
+    std::pair<double, double> uv(const Hit& hit) const override;
 
     Point3D center;
     double radius;

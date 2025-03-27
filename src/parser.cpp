@@ -8,6 +8,8 @@
 #include "metallic.h"
 #include "lambertian.h"
 #include "specular.h"
+#include "texture.h"
+#include "solid.h"
 #include <algorithm>
 #include <iostream>
 #include <fstream>
@@ -83,8 +85,11 @@ void Parser::parse(std::ifstream& input) {
             else if (type == "threads") {
                 parse_threads(ss);
             }
+            else if (type == "texture") {
+                parse_texture(ss);
+            }
             else {
-                throw std::runtime_error("Uknown type: " + type + " in line " + line);
+                throw std::runtime_error("Unknown type: " + type + " in line " + line);
             }
 
         }
@@ -120,29 +125,32 @@ void Parser::verify() {
 
 void Parser::parse_material(std::stringstream& ss) {
     std::string name, kind;
-    Color color;
+    std::string texture_name;
     bool emitting;
-    ss >> name >> kind >> color >> std::boolalpha >> emitting;
+
+    ss >> name >> kind >> texture_name >> std::boolalpha >> emitting;
+    Texture* texture = get_texture(texture_name);
+
     if (kind == "diffuse") {
-        materials[name] = std::make_unique<Diffuse>(color, emitting);
+        materials[name] = std::make_unique<Diffuse>(texture, emitting);
     }
     else if (kind == "lambertian") {
-        materials[name] = std::make_unique<Lambertian>(color, emitting);
+        materials[name] = std::make_unique<Lambertian>(texture, emitting);
     }
     else if (kind == "specular") {
-        materials[name] = std::make_unique<Specular>(color, emitting);
+        materials[name] = std::make_unique<Specular>(texture, emitting);
     }
     else if (kind == "metallic") {
         double fuzz;
         if (ss >> fuzz) {
-            materials[name] = std::make_unique<Metallic>(color, emitting, fuzz);
+            materials[name] = std::make_unique<Metallic>(texture, emitting, fuzz);
         }
         else {
             throw std::runtime_error("Missing fuzz parameter for metal");
         }
     }
     else if (kind == "glass") {
-        materials[name] = std::make_unique<Glass>(color, emitting);
+        materials[name] = std::make_unique<Glass>(texture, emitting);
     }
     else {
         throw std::runtime_error("Unknown material: " + kind);
@@ -156,6 +164,46 @@ Material* Parser::get_material(const std::string& material) {
     }
     else {
         throw std::runtime_error("Unknown material: " + material);
+    }
+}
+
+void Parser::parse_texture(std::stringstream& ss) {
+    std::string name, kind;
+    ss >> name >> kind;
+    if (kind == "solid") {
+        Color color;
+        if (ss >> color) {
+            textures[name] = std::make_unique<Solid>(color);
+        }
+        else {
+            throw std::runtime_error("Missing color for " + kind + " texture: " + name);
+        }
+    }
+    else if (kind == "gradient") {
+
+    }
+    else if (kind == "image") {
+
+    }
+    else if (kind == "checkerboard") {
+
+    }
+    else if (kind == "normal") {
+
+    }
+    else if (kind == "other") {
+
+    }
+    // others: image, checkerboard, etc
+}
+
+Texture* Parser::get_texture(const std::string& texture) {
+    auto i = textures.find(texture);
+    if (i != textures.end()) { // found it!
+        return i->second.get();
+    }
+    else {
+        throw std::runtime_error("Unknown texture: " + texture);
     }
 }
 

@@ -12,6 +12,8 @@
 #include <cmath>
 #include <thread>
 
+#include "texture.h"
+
 
 Color trace(const World& world, const Ray& ray);
 Color trace_path(const World& world, const Ray& ray, int depth);
@@ -96,17 +98,17 @@ Color trace_path(const World& world, const Ray& ray, int depth) {
         return Black;
     }
 
-    const Material* material = hit->sphere->material;
-    // if (material == nullptr) {
-    //     throw std::runtime_error("material is nullptr");
-    // }
+    const Sphere* sphere = hit->sphere;
+    auto [u, v] = sphere->uv(*hit);
+    const Material* material = sphere->material;
+    Color color = material->texture->value(u, v);
+
     if (material->emitting) {
-        return material->color;
+        return color;
     }
 
-    // more bounces!
     Ray scattered = material->scatter(ray, hit.value());
-    return material->color * trace_path(world, scattered, depth-1);
+    return color * trace_path(world, scattered, depth-1);
 }
 
 void print_progress(long long ray_num, long long total_rays) {

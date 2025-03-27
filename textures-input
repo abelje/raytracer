@@ -1,13 +1,23 @@
 # Line of Spheres for textures
+# textures
+texture red solid (1 0 0)
+texture bronze solid (0.81 0.54 0.27)
+texture light solid (1 1 1)
+texture floor solid (0.8 0.8 0.8)
+texture glass solid (1 1 1)
+texture green solid (0 1 0)
+texture grey solid (0.5 0.5 0.5)
+texture skyblue solid (0.53 0.81 0.92)
+
 # materials
-material red lambertian (1 0 0) false
-material bronze metallic (0.81 0.54 0.27) false 0.2
-material light diffuse (1 1 1) true
-material floor lambertian (0.8 0.8 0.8) false
-material glass glass (1 1 1) false
-material green lambertian (0 1 0) false
-material grey specular (0.5 0.5 0.5) false
-material blue lambertian (0.53 0.81 0.92) false
+material red lambertian red false
+material bronze metallic bronze false 0.2
+material light diffuse light true
+material floor lambertian floor false
+material glass glass glass false
+material green lambertian green false
+material grey specular grey false
+material blue lambertian skyblue false
 # floor
 sphere (0 0 -1000) 1000 floor
 # spheres

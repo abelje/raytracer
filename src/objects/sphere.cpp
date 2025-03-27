@@ -7,47 +7,22 @@ Sphere::Sphere(const Point3D& center, double radius, const Material* material)
     :Object{material}, center{center}, radius{radius} {}
 
 std::optional<double> Sphere::aintersect(const Ray& ray) const {
-    //Insert origin ray in |P-C|^2 = r^2
-    // ray.origin - center;
-    //if b^2-4ac is 0, 1 hit
-    // if it is positive, 2 hits
-    // Vector3D oc = ray.origin - center;
-    // double a = dot(ray.direction, ray.direction);
-    // double b = 2 * dot(ray.direction, oc);
-    // double c = dot(oc, oc) - (radius * radius);
-    // double discriminant = (b*b) - (4*a*c);
-
     Vector3D oc = center - ray.origin;
-    auto a = length(ray.direction) * length(ray.direction);
-    auto h = dot(ray.direction, oc);
-    auto c = length(oc) * length(oc) - radius*radius;
-    auto discriminant = h*h - a*c;
-
-    // There are only 3 options:
-    // disc < -eps        => miss
-    // -eps < disc < +eps => one hit
-    // disc > +eps        => two hits, return closer one
-
+    double a = dot(ray.direction, ray.direction);
+    double b = -2*dot(ray.direction, oc);
+    double c = dot(oc, oc) - radius*radius;
+    double discriminant = b*b - 4*a*c;
     if (discriminant < -Constants::epsilon) {
-        // Miss
-        return std::nullopt;
+        return {}; // no hit
     }
-
-    // if (-Constants::epsilon < discriminant) {
-        // one hit
-        return (h - std::sqrt(discriminant)) / a;
-    // }
-
-    // if (discriminant > Constants::epsilon) {
-    //     // two hits, return closer one
-    //     double hit_1 = (-b - std::sqrt(discriminant)) / (2 * a);
-    //     double hit_2 = (-b + std::sqrt(discriminant)) / (2 * a);
-    //     double hit = std::min(std::abs(hit_1), std::abs(hit_2));
-    //     return hit;
-    // }
-    // else {
-    //     return std::nullopt;
-    // }
+    else if (discriminant < Constants::epsilon) { // one hit := -eps <= discriminant < eps
+        double time = -b / (2*a); // round discriminant to zero
+        return time;
+    }
+    else { // two hits := discriminant >= eps
+        double time = (-b - std::sqrt(discriminant)) / (2*a);
+        return time;
+    }
 }
 
 std::optional<double> Sphere::intersect(const Ray& ray) const {
@@ -82,5 +57,13 @@ Hit Sphere::construct_hit(const Ray& ray, double time) const {
     Point3D point = ray.at(time);
     Vector3D normal = (point - center) / radius;
     return Hit{time, point, normal, this};
+}
+
+std::pair<double, double> Sphere::uv(const Hit& hit) const {
+    double theta = std::acos(hit.normal.z); // [0, pi]
+    double phi = std::atan2(hit.normal.y, hit.normal.x); // [-pi, pi]
+    double u = 0.5 + phi / (2 * Constants::pi); // [0, 1]
+    double v = theta / Constants::pi; // [0, 1]
+    return {u, v};
 }
 
