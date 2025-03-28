@@ -3,7 +3,7 @@
 #include "lodepng.h"
 
 Image::Image(const std::string& filename)
-    : pixels(filename) {}
+    : pixels{filename} {}
 
 Color Image::value(double u, double v) const {
     // map (u, v) to (column, height) on an image (use lodepng)

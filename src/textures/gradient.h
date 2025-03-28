@@ -1,8 +1,12 @@
-//
-// Created by abelj on 3/26/2025.
-//
+#pragma once
 
-#ifndef GRADIENT_H
-#define GRADIENT_H
+#include "texture.h"
 
-#endif //GRADIENT_H
+class Gradient : public Texture {
+public:
+    Gradient(Color a, Color b);
+    Color value(double u, double v) const override;
+private:
+    Color a;
+    Color b;
+};

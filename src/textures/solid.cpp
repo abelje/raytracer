@@ -2,7 +2,7 @@
 #include "color.h"
 
 Solid::Solid(Color color)
-    :color(color) {}
+    :color{color} {}
 
 Color Solid::value(double u, double v) const {
     return color;

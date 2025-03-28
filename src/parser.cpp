@@ -17,6 +17,8 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "gradient.h"
+
 Parser::Parser(const std::string& filename)
     :filename{filename}, found_camera{false}, found_pixels{false}, found_output{false}, found_rays{false} {
     std::ifstream input{filename};
@@ -181,7 +183,13 @@ void Parser::parse_texture(std::stringstream& ss) {
         }
     }
     else if (kind == "gradient") {
-
+        Color a, b;
+        if (ss >> a && ss >> b) {
+            textures[name] = std::make_unique<Gradient>(a, b);
+        }
+        else {
+            throw std::runtime_error("Missing color for " + kind + " texture: " + name + "(There are 2 colors)");
+        }
     }
     else if (kind == "image") {
         std::string filename;
