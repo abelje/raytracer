@@ -1,8 +1,12 @@
-//
-// Created by abelj on 3/26/2025.
-//
+#pragma once
 
-#ifndef SURFACE_NORMAL_H
-#define SURFACE_NORMAL_H
+#include "texture.h"
+#include "color.h"
 
-#endif //SURFACE_NORMAL_H
+class Surface_Normal : public Texture {
+public:
+    Surface_Normal(bool smooth = true);
+    Color value(double u, double v) const override;
+private:
+    bool smooth;
+};

@@ -14,12 +14,14 @@
 #include "image.h"
 #include "gradient.h"
 #include "checkerboard.h"
+#include "surface-normal.h"
 #include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
 
+#include "surface-normal.h"
 
 
 Parser::Parser(const std::string& filename)
@@ -219,7 +221,13 @@ void Parser::parse_texture(std::stringstream& ss) {
         }
     }
     else if (kind == "normal") {
-
+        bool smooth;
+        if (ss >> std::boolalpha >> smooth) {
+            textures[name] = std::make_unique<Surface_Normal>(smooth);
+        }
+        else {
+            textures[name] = std::make_unique<Surface_Normal>();
+        }
     }
     else if (kind == "other") {
 
