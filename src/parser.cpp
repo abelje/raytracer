@@ -15,13 +15,12 @@
 #include "gradient.h"
 #include "checkerboard.h"
 #include "surface-normal.h"
+#include "spiral.h"
 #include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
-
-#include "surface-normal.h"
 
 
 Parser::Parser(const std::string& filename)
@@ -229,8 +228,18 @@ void Parser::parse_texture(std::stringstream& ss) {
             textures[name] = std::make_unique<Surface_Normal>();
         }
     }
-    else if (kind == "other") {
-
+    else if (kind == "spiral") {
+        Color a, b;
+        int num_spirals;
+        bool flip;
+        if (ss >> a && ss >> b && ss >> num_spirals) {
+            if (ss >> std::boolalpha >> flip) {
+                textures[name] = std::make_unique<Spiral>(a, b, num_spirals, flip);
+            }
+            else {
+                textures[name] = std::make_unique<Spiral>(a, b, num_spirals);
+            }
+        }
     }
     // others: image, checkerboard, etc
 }

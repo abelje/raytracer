@@ -6,9 +6,9 @@ texture floor solid (0.8 0.8 0.8)
 texture grey solid (0.5 0.5 0.5)
 texture grad gradient (0 1 0) (0 0 1)
 texture earth image earthmap.png
-texture norm normal false
+texture norm normal
 texture checker checkerboard (1 0 0) (1 1 1) 16
-texture spin solid (0.5 0.5 0.5)
+texture spin spiral (0.5 0.5 0.5) (0 0 1) 15
 # background material
 material light diffuse light true
 material floor lambertian floor false
@@ -18,7 +18,7 @@ material grad lambertian grad false
 material earth diffuse earth false
 material norm diffuse norm false
 material checker lambertian checker false
-material spin specular spin false
+material spin diffuse spin false
 # floor
 sphere (0 0 -1000) 1000 floor
 # spheres

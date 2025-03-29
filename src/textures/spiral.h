@@ -1,8 +1,15 @@
-//
-// Created by abelj on 3/26/2025.
-//
+#pragma once
 
-#ifndef SPIRAL_H
-#define SPIRAL_H
+#include "texture.h"
+#include "color.h"
 
-#endif //SPIRAL_H
+class Spiral : public Texture {
+public:
+    Spiral(Color a, Color b, int num_spirals, bool flip = false);
+    Color value(double u, double v) const override;
+private:
+    Color a;
+    Color b;
+    int num_spirals;
+    bool flip;
+};
