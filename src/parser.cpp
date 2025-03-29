@@ -208,8 +208,14 @@ void Parser::parse_texture(std::stringstream& ss) {
     }
     else if (kind == "checkerboard") {
         Color a, b;
+        int rows;
         if (ss >> a && ss >> b) {
-            textures[name] = std::make_unique<Checkerboard>(a, b);
+            if (ss >> rows) {
+                textures[name] = std::make_unique<Checkerboard>(a, b, rows);
+            }
+            else {
+                textures[name] = std::make_unique<Checkerboard>(a, b);
+            }
         }
     }
     else if (kind == "normal") {

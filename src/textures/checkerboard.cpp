@@ -3,11 +3,10 @@
 
 #include "constants.h"
 
-Checkerboard::Checkerboard(Color a, Color b)
-    : a{a}, b{b} {}
+Checkerboard::Checkerboard(Color a, Color b, int rows)
+    : a{a}, b{b}, rows{rows} {}
 
 Color Checkerboard::value(double u, double v) const {
-    int rows = 12;
     // casting to int makes it available with modulo, std::floor rounds values down
     int iu = (static_cast<int>(std::floor(u * rows)));
     int iv = (static_cast<int>(std::floor(v * rows)));
