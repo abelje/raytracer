@@ -7,7 +7,7 @@ texture grey solid (0.5 0.5 0.5)
 texture grad gradient (0 1 0) (0 0 1)
 texture earth image earthmap.png
 texture norm solid (1 1 1)
-texture checker solid (0.53 0.81 0.92)
+texture checker checkerboard (1 0 0) (1 1 1)
 texture spin solid (0.5 0.5 0.5)
 # background material
 material light diffuse light true

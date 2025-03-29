@@ -12,14 +12,15 @@
 #include "texture.h"
 #include "solid.h"
 #include "image.h"
+#include "gradient.h"
+#include "checkerboard.h"
 #include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
 
-#include "gradient.h"
-#include "triangle.h"
+
 
 Parser::Parser(const std::string& filename)
     :filename{filename}, found_camera{false}, found_pixels{false}, found_output{false}, found_rays{false} {
@@ -206,7 +207,10 @@ void Parser::parse_texture(std::stringstream& ss) {
         }
     }
     else if (kind == "checkerboard") {
-
+        Color a, b;
+        if (ss >> a && ss >> b) {
+            textures[name] = std::make_unique<Checkerboard>(a, b);
+        }
     }
     else if (kind == "normal") {
 

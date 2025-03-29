@@ -1,8 +1,13 @@
-//
-// Created by abelj on 3/26/2025.
-//
+#pragma once
 
-#ifndef CHECKERBOARD_H
-#define CHECKERBOARD_H
+#include "texture.h"
+#include "color.h"
 
-#endif //CHECKERBOARD_H
+class Checkerboard : public Texture {
+public:
+    Checkerboard(Color a, Color b);
+    Color value(double u, double v) const override;
+
+private:
+    Color a, b;
+};
