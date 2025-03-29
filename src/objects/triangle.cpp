@@ -1,9 +1,7 @@
 #include "triangle.h"
-
-#include <bemapiset.h>
-
 #include "constants.h"
 #include "ray.h"
+#include "hit.h"
 
 Triangle::Triangle(const Point3D& vertex0, const Point3D& vertex1, const Point3D& vertex2, const Material *material)
     :Object{material}, vertex0 {vertex0}, vertex1{vertex1}, vertex2{vertex2}, edge1{vertex1-vertex0},
@@ -40,4 +38,11 @@ std::optional<double> Triangle::intersect(const Ray& ray) const {
     else {
         return {};
     }
+}
+
+Hit Triangle::construct_hit(const Ray& ray, double time) const {
+
+}
+std::pair<double,double> Triangle::uv(const Hit& hit) const {
+
 }

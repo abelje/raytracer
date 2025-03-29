@@ -26,6 +26,8 @@ sphere (5 -4 1) 1 blue
 sphere (-2.5 0 1.5) 1 green
 sphere (0 5 1) 1 grey
 sphere (5 3 2) 1 grey
+# triangles
+triangle (1 1 1) bronze
 # light
 sphere (4 -9 4) 1000 light
 # rendering

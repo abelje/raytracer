@@ -4,6 +4,7 @@
 #include "camera.h"
 #include "pixels.h"
 #include "sphere.h"
+#include "triangle.h"
 #include "glass.h"
 #include "metallic.h"
 #include "lambertian.h"
@@ -18,6 +19,7 @@
 #include <stdexcept>
 
 #include "gradient.h"
+#include "triangle.h"
 
 Parser::Parser(const std::string& filename)
     :filename{filename}, found_camera{false}, found_pixels{false}, found_output{false}, found_rays{false} {
@@ -75,6 +77,9 @@ void Parser::parse(std::ifstream& input) {
             }
             else if (type == "sphere") {
                 parse_sphere(ss);
+            }
+            else if (type == "triangle") {
+                parse_triangle(ss);
             }
             else if (type == "output") {
                 parse_output(ss);
@@ -235,6 +240,17 @@ void Parser::parse_sphere(std::stringstream& ss) {
         throw std::runtime_error("Malformed sphere");
     }
 }
+
+void Parser::parse_triangle(std::stringstream& ss) {
+    Point3D vertex0, vertex1, vertex2;
+    std::string material_name;
+    if (ss >> vertex0 >> vertex1 >> vertex2 >> material_name) {
+        const Material* material = get_material(material_name);
+        std::unique_ptr<Object> object = std::make_unique<Triangle>(vertex0, vertex1, vertex2, material);
+        world.add(std::move(object));
+    }
+}
+
 void Parser::parse_camera(std::stringstream& ss) {
     if (ss >> camera_position >> camera_target >> camera_up >> camera_fov) {
         found_camera = true;
