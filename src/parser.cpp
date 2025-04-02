@@ -218,6 +218,9 @@ void Parser::parse_texture(std::stringstream& ss) {
                 textures[name] = std::make_unique<Checkerboard>(a, b);
             }
         }
+        else {
+            throw std::runtime_error("Missing color(s) for " + kind + " texture: " + name);
+        }
     }
     else if (kind == "normal") {
         bool smooth;
@@ -239,6 +242,9 @@ void Parser::parse_texture(std::stringstream& ss) {
             else {
                 textures[name] = std::make_unique<Spiral>(a, b, num_spirals);
             }
+        }
+        else {
+            throw std::runtime_error("Missing colors or spirals for " + kind + " texture: " + name);
         }
     }
     // others: image, checkerboard, etc
@@ -275,6 +281,9 @@ void Parser::parse_triangle(std::stringstream& ss) {
         const Material* material = get_material(material_name);
         std::unique_ptr<Object> object = std::make_unique<Triangle>(vertex0, vertex1, vertex2, material);
         world.add(std::move(object));
+    }
+    else {
+        throw std::runtime_error("Malformed triangle");
     }
 }
 

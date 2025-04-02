@@ -15,7 +15,7 @@ material floor lambertian floor false
 # material
 material grey specular grey false
 material grad lambertian grad false
-material earth diffuse earth false
+material earth glass earth false
 material norm diffuse norm false
 material checker lambertian checker false
 material spin diffuse spin false

@@ -27,7 +27,7 @@ std::optional<double> Triangle::intersect(const Ray& ray) const {
 
     Vector3D q = cross(s, edge1);
     double v = f * dot(edge2, q);
-    if (v < 0.0 || v > 1.0) {
+    if (v < 0.0 || (u + v) > 1.0) {
         return {};
     }
 
@@ -36,13 +36,25 @@ std::optional<double> Triangle::intersect(const Ray& ray) const {
         return t;
     }
     else {
-        return {};
+        return {}; // ray origin too close to triangle surface
     }
 }
 
 Hit Triangle::construct_hit(const Ray& ray, double time) const {
-
+    Point3D point = ray.at(time);
+    // ensure that the ray and surface normals are pointing in opposite directions
+    bool negative = std::signbit(dot(ray.direction, normal));
+    if (negative) {
+        return Hit{time, point, normal, this};
+    }
+    else {
+        return Hit{time, point, -normal, this};
+    }
 }
 std::pair<double,double> Triangle::uv(const Hit& hit) const {
-
+    Vector3D P = hit.position - vertex0;
+    double u = dot(P, edge1)/ length(edge1);
+    double v = dot(P, edge2)/ length(edge2);
+    double magnitude = (u+v) / 2.0;
+    return {u/magnitude, v/magnitude};
 }

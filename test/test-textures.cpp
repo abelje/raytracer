@@ -98,7 +98,7 @@ Color trace_path(const World& world, const Ray& ray, int depth) {
         return Black;
     }
 
-    const Sphere* sphere = hit->sphere;
+    const Object* sphere = hit->object;
     auto [u, v] = sphere->uv(*hit);
     const Material* material = sphere->material;
     Color color = material->texture->value(u, v);
