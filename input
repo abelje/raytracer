@@ -20,17 +20,18 @@ material blue lambertian skyblue false
 # floor
 sphere (0 0 -1000) 1000 floor
 # spheres
-sphere (0 0 1) 1 bronze
-sphere (2 -2 1) 1 glass
+# sphere (0 0 1) 1 bronze
+# sphere (2 -2 1) 1 glass
 sphere (5 -4 1) 1 blue
 sphere (-2.5 0 1.5) 1 green
 sphere (0 5 1) 1 grey
 sphere (5 3 2) 1 grey
 # triangles
-triangle (-1 -1 0) (1 -1 0) (0 -1 1) bronze
+triangle (-1 -1 1) (1 -1 2) (0 -1 1) bronze
 
 # mesh
-mesh (0 0 0) pyramid.txt glass
+mesh (0 0 0) pyramid green
+mesh (2 0 0) pyramid blue
 # light
 sphere (4 -9 4) 1000 light
 # rendering

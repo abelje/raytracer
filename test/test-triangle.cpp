@@ -9,7 +9,7 @@ int main() {
 
     int rows = 720;
     int columns = 1280;
-    double scale =0.01;
+    double scale =0.05;
     Pixels pixels{columns, rows};
 
     for (int row = 0; row < rows; ++row) {
@@ -19,7 +19,7 @@ int main() {
             Ray ray {{x,-2,z},{0, 1, 0}};
             auto time = t.intersect(ray);
             if (time) {
-                pixels(row, col) = {1, 0, 0};
+                pixels(row, col) = {1, 1, 1};
             }
         }
     }

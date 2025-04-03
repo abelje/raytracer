@@ -83,6 +83,9 @@ void Parser::parse(std::ifstream& input) {
             else if (type == "triangle") {
                 parse_triangle(ss);
             }
+            else if (type == "mesh") {
+                parse_mesh(ss);
+            }
             else if (type == "output") {
                 parse_output(ss);
             }
@@ -285,6 +288,50 @@ void Parser::parse_triangle(std::stringstream& ss) {
     else {
         throw std::runtime_error("Malformed triangle");
     }
+}
+
+void Parser::parse_mesh(std::stringstream& ss) {
+    // mesh position filename material_name
+    Vector3D position;
+    std::string filename, material_name;
+    if (!(ss >> position >> filename >> material_name)) {
+        throw std::runtime_error("Malformed mesh");
+    }
+
+    const Material* material = get_material(material_name);
+
+    std::ifstream input{filename};
+    if(!input) {
+        throw std::runtime_error("Cannot open mesh file: " + filename);
+    }
+
+    std::string temp;
+    input >> temp;
+    if (temp != "vertices") {
+        throw std::runtime_error("Mesh file must start with 'vertices'");
+    }
+
+    std::vector<Vector3D> vertices;
+    for (Vector3D vertex; input >> vertex;) {
+        vertices.push_back(vertex + position);
+    }
+    if (vertices.size() < 3) {
+        throw std::runtime_error("Mesh file must contain at least 3 vertices");
+    }
+
+    // input attempted to read "triangles" > Vector3D
+    input.clear(); // clears error bit
+    input >> temp; //"triangles"
+    // if (temp != "triangles") {
+    //     throw std::runtime_error("Mesh file must contain 'triangles'");
+    // }
+    // read each line under triangles
+    for (int a, b, c; input >> a >> b >> c;) {
+        std::unique_ptr<Object> triangle = std::make_unique<Triangle>(vertices.at(a), vertices.at(b),
+                                                                            vertices.at(c), material);
+        world.add(std::move(triangle));
+    }
+
 }
 
 void Parser::parse_camera(std::stringstream& ss) {

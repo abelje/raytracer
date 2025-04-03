@@ -26,7 +26,7 @@ std::optional<double> Triangle::intersect(const Ray& ray) const {
     }
 
     Vector3D q = cross(s, edge1);
-    double v = f * dot(edge2, q);
+    double v = f * dot(ray.direction, q);
     if (v < 0.0 || (u + v) > 1.0) {
         return {};
     }
