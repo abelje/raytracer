@@ -12,6 +12,7 @@ class Sphere : public Object {
 public:
     Sphere(const Point3D& center, double radius, const Material* material=nullptr);
 
+    AABB bounding_box() const override;
     // returns the distance if the ray intersects this sphere, otherwise std::nullopt
     std::optional<double> aintersect(const Ray& ray) const;
     std::optional<double> intersect(const Ray& ray) const override;
