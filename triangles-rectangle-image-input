@@ -1,10 +1,11 @@
-# Image made using triangles
+# Image with scaled Rectangle with image texture
 # background textures
 texture light solid (1 1 1)
 texture floor solid (0.8 0.8 0.8)
 # textures
 texture grey solid (0.5 0.5 0.5)
 texture checker checkerboard (1 0 0) (1 1 1) 16
+texture earth image earthmap.png
 # background material
 material light diffuse light true
 material floor lambertian floor false
@@ -12,19 +13,21 @@ material floor lambertian floor false
 material checker lambertian checker false
 material glass glass grey false
 material reflect specular light false
+material earth glass earth false
 # sphere
-sphere (0 0 1) 0.5 checker
+# sphere (0 0 1) 0.5 checker
 # rectangle
-rectangle (-2 5 0) (4 3 0) 3 reflect
+rectangle (-2 5 0) (10 3 0) 6 earth
 # mesh
-mesh (0 0 0) box glass
+# mesh (0 0 0) box glass
 # floor
 sphere (0 0 -1000) 1000 floor
 # light
 rectangle (-4 -2 0) (-4 3 0) 3 light
+sphere (4 -9 4) 1000 light
 # rendering
 threads 12
-rays 10 10000
+rays 10 100
 camera (2 -8 4) (1.5 0 1) (0 0 1) 90
 pixels 1280 720
 output triangle.png

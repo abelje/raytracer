@@ -1,6 +1,7 @@
 #include "rectangle.h"
 
 #include <cmath>
+#include <bits/algorithmfwd.h>
 
 #include "hit.h"
 #include "aabb.h"
@@ -61,11 +62,7 @@ Hit Rectangle::construct_hit(const Ray& ray, double time) const {
 
 std::pair<double, double> Rectangle::uv(const Hit& hit) const {
     Vector3D P = hit.position - top.vertex0;
-    double u = dot(P, top.edge2)/ length(top.edge2);
-    double v = dot(P, top.edge1)/ length(top.edge1);
-
-    double aspect_ratio = length(top.edge1) / length(top.edge2);  // Rectangle aspect ratio (width / height)
-    u *= aspect_ratio;  // Scale u coordinate to match aspect ratio
-
+    double u = dot(P, top.edge2) / dot(top.edge2, top.edge2); // percentage of the side ratio
+    double v = dot(P, top.edge1) / dot(top.edge1, top.edge1);
     return {u, 1.0 - v};
 }

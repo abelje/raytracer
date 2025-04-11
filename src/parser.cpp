@@ -140,7 +140,7 @@ void Parser::setup_parse_material() {
         return std::make_unique<Specular>(texture, emitting);
     };
     material_map["metallic"] = [](Texture* texture, bool emitting, std::stringstream& ss) {
-            double fuzz;
+        double fuzz;
         if (ss >> fuzz) {
                 return std::make_unique<Metallic>(texture, emitting, fuzz);
         }
