@@ -33,6 +33,7 @@ Parser::Parser(const std::string& filename)
     }
     set_parse_map();
     setup_parse_material();
+    setup_parse_texture();
     parse(input);
     verify();
 }
@@ -179,79 +180,81 @@ Material* Parser::get_material(const std::string& material) {
     }
 }
 
-// void Parser::setup_parse_texture() {
-//
-// }
+void Parser::setup_parse_texture() {
+    texture_map["solid"] = [](std::stringstream& ss) {
+        Color color;
+        if (!(ss >> color)) {
+            throw std::runtime_error("Missing color for solid texture: ");
+        }
+        return std::make_unique<Solid>(color);
+    };
+    texture_map["gradient"] = [](std::stringstream& ss) {
+        Color a, b;
+        if (!(ss >> a && ss >> b)) {
+            throw std::runtime_error("Missing color for gradient texture (There are 2 colors): ");
+        }
+        return std::make_unique<Gradient>(a, b);
+    };
+    texture_map["image"] = [](std::stringstream& ss) {
+        std::string filename;
+        if (!(ss >> filename)) {
+            throw std::runtime_error("Missing filename for image texture: ");
+        }
+        return std::make_unique<Image>(filename);
+    };
+    texture_map["checkerboard"] = [](std::stringstream& ss) {
+        Color a, b;
+        int rows;
+        if (!(ss >> a && ss >> b)) {
+            throw std::runtime_error("Missing color(s) for checkerboard texture: ");
+        }
+        if (ss >> rows) {
+            return std::make_unique<Checkerboard>(a, b, rows);
+        }
+        else {
+            return std::make_unique<Checkerboard>(a, b);
+        }
+    };
+
+    texture_map["normal"] = [](std::stringstream& ss) {
+        bool smooth;
+        if (ss >> std::boolalpha >> smooth) {
+            return std::make_unique<Surface_Normal>(smooth);
+        }
+        else {
+            return std::make_unique<Surface_Normal>();
+        }
+    };
+    texture_map["spiral"] = [](std::stringstream& ss) {
+        Color a, b;
+        int num_spirals;
+        bool flip;
+        if (!(ss >> a && ss >> b && ss >> num_spirals)) {
+            throw std::runtime_error("Missing colors or spirals for spiral texture: ");
+        }
+        if (ss >> std::boolalpha >> flip) {
+            return std::make_unique<Spiral>(a, b, num_spirals, flip);
+        }
+        else {
+            return std::make_unique<Spiral>(a, b, num_spirals);
+        }
+    };
+}
 
 void Parser::parse_texture(std::stringstream& ss) {
     std::string name, kind;
     ss >> name >> kind;
-    if (kind == "solid") {
-        Color color;
-        if (ss >> color) {
-            textures[name] = std::make_unique<Solid>(color);
+    auto function = texture_map.find(kind);
+    if (function != texture_map.end()) {
+        try {
+            textures[name] = function->second(ss);
         }
-        else {
-            throw std::runtime_error("Missing color for " + kind + " texture: " + name);
-        }
-    }
-    else if (kind == "gradient") {
-        Color a, b;
-        if (ss >> a && ss >> b) {
-            textures[name] = std::make_unique<Gradient>(a, b);
-        }
-        else {
-            throw std::runtime_error("Missing color for " + kind + " texture: " + name + "(There are 2 colors)");
+        catch (std::runtime_error& e) {
+            throw std::runtime_error(e.what() + name);
         }
     }
-    else if (kind == "image") {
-        std::string filename;
-        if (ss >> filename) {
-            textures[name] = std::make_unique<Image>(filename);
-        }
-        else {
-            throw std::runtime_error("Missing filename for " + kind + " texture: " + name);
-        }
-    }
-    else if (kind == "checkerboard") {
-        Color a, b;
-        int rows;
-        if (ss >> a && ss >> b) {
-            if (ss >> rows) {
-                textures[name] = std::make_unique<Checkerboard>(a, b, rows);
-            }
-            else {
-                textures[name] = std::make_unique<Checkerboard>(a, b);
-            }
-        }
-        else {
-            throw std::runtime_error("Missing color(s) for " + kind + " texture: " + name);
-        }
-    }
-    else if (kind == "normal") {
-        bool smooth;
-        if (ss >> std::boolalpha >> smooth) {
-            textures[name] = std::make_unique<Surface_Normal>(smooth);
-        }
-        else {
-            textures[name] = std::make_unique<Surface_Normal>();
-        }
-    }
-    else if (kind == "spiral") {
-        Color a, b;
-        int num_spirals;
-        bool flip;
-        if (ss >> a && ss >> b && ss >> num_spirals) {
-            if (ss >> std::boolalpha >> flip) {
-                textures[name] = std::make_unique<Spiral>(a, b, num_spirals, flip);
-            }
-            else {
-                textures[name] = std::make_unique<Spiral>(a, b, num_spirals);
-            }
-        }
-        else {
-            throw std::runtime_error("Missing colors or spirals for " + kind + " texture: " + name);
-        }
+    else {
+        throw std::runtime_error("Unknown " + kind + "texture: " + name);
     }
     // others: image, checkerboard, etc
 }
