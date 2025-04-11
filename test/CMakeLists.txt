@@ -38,3 +38,6 @@ target_link_libraries(test-textures PRIVATE raytracer)
 
 add_executable(test-triangle test-triangle.cpp)
 target_link_libraries(test-triangle PRIVATE raytracer)
+
+add_executable(test-rectangle test-rectangle.cpp)
+target_link_libraries(test-rectangle PRIVATE raytracer)

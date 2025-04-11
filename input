@@ -27,8 +27,8 @@ sphere (-2.5 0 1.5) 1 green
 sphere (0 5 1) 1 grey
 sphere (5 3 2) 1 grey
 # triangles
-triangle (-1 -1 1) (1 -1 2) (0 -1 1) bronze
-
+#triangle (-1 -1 1) (1 -1 2) (0 -1 1) bronze
+rectangle (-1 -1 1) 1 1 bronze
 # mesh
 mesh (0 0 0) pyramid green
 mesh (2 0 0) pyramid blue

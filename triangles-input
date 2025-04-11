@@ -1,0 +1,34 @@
+# Line of Spheres for textures
+# background textures
+texture light solid (1 1 1)
+texture floor solid (0.8 0.8 0.8)
+# textures
+texture grey solid (0.5 0.5 0.5)
+texture grad gradient (0 1 0) (0 0 1)
+texture earth image earthmap.png
+texture norm normal
+texture checker checkerboard (1 0 0) (1 1 1) 16
+texture spin spiral (0.5 0.5 0.5) (0 0 1) 15
+# background material
+material light diffuse light true
+material floor lambertian floor false
+# material
+material grey specular grey false
+material grad lambertian grad false
+material earth glass earth false
+material norm diffuse norm false
+material checker lambertian checker false
+material spin diffuse spin false
+# triangles
+rectangle (0 0 1) 6 3 checker
+
+# floor
+sphere (0 0 -1000) 1000 floor
+# light
+sphere (4 -9 4) 1000 light
+# rendering
+threads 8
+rays 10 100
+camera (2 -8 4) (1.5 0 1) (0 0 1) 90
+pixels 1280 720
+output triangle.png

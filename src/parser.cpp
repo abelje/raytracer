@@ -5,6 +5,7 @@
 #include "pixels.h"
 #include "sphere.h"
 #include "triangle.h"
+#include "rectangle.h"
 #include "glass.h"
 #include "metallic.h"
 #include "lambertian.h"
@@ -82,6 +83,9 @@ void Parser::parse(std::ifstream& input) {
             }
             else if (type == "triangle") {
                 parse_triangle(ss);
+            }
+            else if (type == "rectangle") {
+                parse_rectangle(ss);
             }
             else if (type == "mesh") {
                 parse_mesh(ss);
@@ -290,6 +294,20 @@ void Parser::parse_triangle(std::stringstream& ss) {
     }
 }
 
+void Parser::parse_rectangle(std::stringstream& ss) {
+    Point3D top_left;
+    double length, width;
+    std::string material_name;
+    if (ss >> top_left >> length >> width >> material_name) {
+        const Material* material = get_material(material_name);
+        std::unique_ptr<Object> object = std::make_unique<Rectangle>(top_left, length, width, material);
+        world.add(std::move(object));
+    }
+    else {
+        throw std::runtime_error("Malformed rectangle");
+    }
+}
+
 void Parser::parse_mesh(std::stringstream& ss) {
     // mesh position filename material_name
     Vector3D position;
@@ -319,13 +337,13 @@ void Parser::parse_mesh(std::stringstream& ss) {
         throw std::runtime_error("Mesh file must contain at least 3 vertices");
     }
 
-    // input attempted to read "triangles" > Vector3D
+    // input attempted to read "triangles-input" > Vector3D
     input.clear(); // clears error bit
-    input >> temp; //"triangles"
-    // if (temp != "triangles") {
-    //     throw std::runtime_error("Mesh file must contain 'triangles'");
+    input >> temp; //"triangles-input"
+    // if (temp != "triangles-input") {
+    //     throw std::runtime_error("Mesh file must contain 'triangles-input'");
     // }
-    // read each line under triangles
+    // read each line under triangles-input
     for (int a, b, c; input >> a >> b >> c;) {
         std::unique_ptr<Object> triangle = std::make_unique<Triangle>(vertices.at(a), vertices.at(b),
                                                                             vertices.at(c), material);
