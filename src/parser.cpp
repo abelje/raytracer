@@ -313,7 +313,7 @@ void Parser::parse_mesh(std::stringstream& ss) {
     Vector3D position;
     std::string filename, material_name;
     if (!(ss >> position >> filename >> material_name)) {
-        throw std::runtime_error("Malformed mesh");
+        throw std::runtime_error("Malformed mesh\nEx: (0 0 0) mesh_file material_name");
     }
 
     const Material* material = get_material(material_name);
@@ -357,7 +357,7 @@ void Parser::parse_camera(std::stringstream& ss) {
         found_camera = true;
     }
     else {
-        throw std::runtime_error("Malformed camera");
+        throw std::runtime_error("Malformed camera\nEx:  (2 -8 4) (1.5 0 1) (0 0 1) 90");
     }
 
 }
