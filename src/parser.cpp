@@ -277,7 +277,7 @@ void Parser::parse_sphere(std::stringstream& ss) {
         world.add(std::move(object));
     }
     else {
-        throw std::runtime_error("Malformed sphere");
+        throw std::runtime_error("Malformed sphere\nEx: (0 0 0) 1 material_name");
     }
 }
 
@@ -290,21 +290,21 @@ void Parser::parse_triangle(std::stringstream& ss) {
         world.add(std::move(object));
     }
     else {
-        throw std::runtime_error("Malformed triangle");
+        throw std::runtime_error("Malformed triangle\nEx: (-1 -1 1) (1 -1 2) (0 -1 1) material_name");
     }
 }
 
 void Parser::parse_rectangle(std::stringstream& ss) {
-    Point3D top_left;
-    double length, width;
+    Point3D bottom_left, bottom_right;
+    double width;
     std::string material_name;
-    if (ss >> top_left >> length >> width >> material_name) {
+    if (ss >> bottom_left >> bottom_right >> width >> material_name) {
         const Material* material = get_material(material_name);
-        std::unique_ptr<Object> object = std::make_unique<Rectangle>(top_left, length, width, material);
+        std::unique_ptr<Object> object = std::make_unique<Rectangle>(bottom_left, bottom_right, width, material);
         world.add(std::move(object));
     }
     else {
-        throw std::runtime_error("Malformed rectangle");
+        throw std::runtime_error("Malformed rectangle\nEx: (0 0 0) (10 0 0) 5 material_name");
     }
 }
 

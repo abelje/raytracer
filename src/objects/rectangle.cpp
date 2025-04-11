@@ -6,11 +6,11 @@
 #include "aabb.h"
 #include "ray.h"
 
-Rectangle::Rectangle(const Point3D& top_left, double length, double width, const Material* material)
-    :Object{material}, top{top_left,{top_left.x, top_left.y, top_left.z + width},
-        {top_left.x + length, top_left.y, top_left.z}, material},
-    bottom{{top_left.x + length, top_left.y, top_left.z + width},{top_left.x, top_left.y,
-        top_left.z + width},{top_left.x + length, top_left.y, top_left.z}, material} {}
+Rectangle::Rectangle(const Point3D& bottom_left, const Point3D& bottom_right, double width, const Material* material)
+    :Object{material}, top{bottom_left,{bottom_left.x, bottom_left.y, bottom_left.z + width},
+        bottom_right, material},
+    bottom{{bottom_right.x, bottom_right.y, bottom_right.z + width},{bottom_left.x, bottom_left.y,
+        bottom_left.z + width},bottom_right, material} {}
 
 AABB Rectangle::bounding_box() const {
     double xmin = std::min(top.vertex0.x, std::min(top.vertex1.x, top.vertex2.x));

@@ -5,7 +5,7 @@
 
 class Rectangle : public Object {
 public:
-    Rectangle(const Point3D& top_left, double length, double width, const Material* material);
+    Rectangle(const Point3D& bottom_left, const Point3D& bottom_right, double width, const Material* material);
 
     AABB bounding_box() const override;
     std::optional<double> intersect(const Ray& ray) const override;
