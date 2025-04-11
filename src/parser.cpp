@@ -31,6 +31,8 @@ Parser::Parser(const std::string& filename)
         std::string msg{"Could not open filename: " + filename};
         throw std::runtime_error(msg);
     }
+    set_parse_map();
+    setup_parse_material();
     parse(input);
     verify();
 }
@@ -60,6 +62,20 @@ bool is_whitespace(const std::string& line) {
     return std::all_of(std::begin(line), std::end(line), ::isspace);
 }
 
+void Parser::set_parse_map() {
+    parse_map["material"] = [this](std::stringstream& ss) {parse_material(ss);};
+    parse_map["camera"] = [this](std::stringstream& ss) {parse_camera(ss);};
+    parse_map["sphere"] = [this](std::stringstream& ss) {parse_sphere(ss);};
+    parse_map["triangle"] = [this](std::stringstream& ss) {parse_triangle(ss);};
+    parse_map["rectangle"] = [this](std::stringstream& ss) {parse_rectangle(ss);};
+    parse_map["mesh"] = [this](std::stringstream& ss) {parse_mesh(ss);};
+    parse_map["output"] = [this](std::stringstream& ss) {parse_output(ss);};
+    parse_map["pixels"] = [this](std::stringstream& ss) {parse_pixels(ss);};
+    parse_map["rays"] = [this](std::stringstream& ss) {parse_rays(ss);};
+    parse_map["threads"] = [this](std::stringstream& ss) {parse_threads(ss);};
+    parse_map["texture"] = [this](std::stringstream& ss) {parse_texture(ss);};
+}
+
 void Parser::parse(std::ifstream& input) {
     for (std::string line; std::getline(input, line);) {
         remove_comment(line); // remove all text after #
@@ -72,38 +88,10 @@ void Parser::parse(std::ifstream& input) {
             std::stringstream ss{line};
             std::string type;
             ss >> type; // gets the first word
-            if (type == "material") {
-                parse_material(ss);
-            }
-            else if (type == "camera") {
-                parse_camera(ss);
-            }
-            else if (type == "sphere") {
-                parse_sphere(ss);
-            }
-            else if (type == "triangle") {
-                parse_triangle(ss);
-            }
-            else if (type == "rectangle") {
-                parse_rectangle(ss);
-            }
-            else if (type == "mesh") {
-                parse_mesh(ss);
-            }
-            else if (type == "output") {
-                parse_output(ss);
-            }
-            else if (type == "pixels") {
-                parse_pixels(ss);
-            }
-            else if (type == "rays") {
-                parse_rays(ss);
-            }
-            else if (type == "threads") {
-                parse_threads(ss);
-            }
-            else if (type == "texture") {
-                parse_texture(ss);
+
+            auto function = parse_map.find(type);
+            if (function != parse_map.end()) {
+                function->second(ss);
             }
             else {
                 throw std::runtime_error("Unknown type: " + type + " in line " + line);
@@ -140,6 +128,30 @@ void Parser::verify() {
     }
 }
 
+void Parser::setup_parse_material() {
+    material_map["diffuse"] = [](Texture* texture, bool emitting, std::stringstream&) {
+        return std::make_unique<Diffuse>(texture, emitting);
+    };
+    material_map["lambertian"] = [](Texture* texture, bool emitting, std::stringstream&) {
+        return std::make_unique<Lambertian>(texture, emitting);
+    };
+    material_map["specular"] = [](Texture* texture, bool emitting, std::stringstream&) {
+        return std::make_unique<Specular>(texture, emitting);
+    };
+    material_map["metallic"] = [](Texture* texture, bool emitting, std::stringstream& ss) {
+            double fuzz;
+        if (ss >> fuzz) {
+                return std::make_unique<Metallic>(texture, emitting, fuzz);
+        }
+        else {
+                throw std::runtime_error("Missing fuzz parameter for metal");
+        }
+    };
+    material_map["glass"] = [](Texture* texture, bool emitting, std::stringstream&) {
+        return std::make_unique<Glass>(texture, emitting);
+    };
+}
+
 void Parser::parse_material(std::stringstream& ss) {
     std::string name, kind;
     std::string texture_name;
@@ -148,26 +160,9 @@ void Parser::parse_material(std::stringstream& ss) {
     ss >> name >> kind >> texture_name >> std::boolalpha >> emitting;
     Texture* texture = get_texture(texture_name);
 
-    if (kind == "diffuse") {
-        materials[name] = std::make_unique<Diffuse>(texture, emitting);
-    }
-    else if (kind == "lambertian") {
-        materials[name] = std::make_unique<Lambertian>(texture, emitting);
-    }
-    else if (kind == "specular") {
-        materials[name] = std::make_unique<Specular>(texture, emitting);
-    }
-    else if (kind == "metallic") {
-        double fuzz;
-        if (ss >> fuzz) {
-            materials[name] = std::make_unique<Metallic>(texture, emitting, fuzz);
-        }
-        else {
-            throw std::runtime_error("Missing fuzz parameter for metal");
-        }
-    }
-    else if (kind == "glass") {
-        materials[name] = std::make_unique<Glass>(texture, emitting);
+    auto function = material_map.find(kind);
+    if (function != material_map.end()) {
+        materials[name] = function->second(texture, emitting, ss);
     }
     else {
         throw std::runtime_error("Unknown material: " + kind);
@@ -183,6 +178,10 @@ Material* Parser::get_material(const std::string& material) {
         throw std::runtime_error("Unknown material: " + material);
     }
 }
+
+// void Parser::setup_parse_texture() {
+//
+// }
 
 void Parser::parse_texture(std::stringstream& ss) {
     std::string name, kind;

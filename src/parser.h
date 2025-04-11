@@ -3,6 +3,8 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <functional>
+#include <unordered_map>
 #include "world.h"
 
 class Camera;
@@ -25,13 +27,15 @@ public:
     int ray_depth, ray_samples, num_threads=1;
 
 private:
-
+    std::unordered_map<std::string, std::function<void(std::stringstream&)>> parse_map;
+    void set_parse_map();
     void parse(std::ifstream& input);
     void verify();
 
+    std::unordered_map<std::string, std::function<std::unique_ptr<Material>(Texture*, bool, std::stringstream&)>> material_map;
+    void setup_parse_material();
     void parse_material(std::stringstream& ss);
     Material* get_material(const std::string& material);
-
     void parse_texture(std::stringstream& ss);
     Texture* get_texture(const std::string& texture);
     void parse_sphere(std::stringstream& ss);
