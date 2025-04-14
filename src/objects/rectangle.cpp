@@ -1,7 +1,6 @@
 #include "rectangle.h"
 
 #include <cmath>
-#include <bits/algorithmfwd.h>
 
 #include "hit.h"
 #include "aabb.h"

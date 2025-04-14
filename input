@@ -32,7 +32,7 @@ sphere (5 3 2) 1 grey
 # mesh
 mesh (0 0 0) pyramid green
 mesh (2 0 0) pyramid blue
-# light
+# light5
 sphere (4 -9 4) 1000 light
 # rendering
 threads 8
