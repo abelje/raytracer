@@ -5,7 +5,7 @@
 
 int main() {
     //needs a material
-    Rectangle t{{0, 0, 0}, 5, 5, nullptr};
+    Rectangle t{{0, 0, 0}, {5, 0, 0}, 5, nullptr};
 
     int rows = 720;
     int columns = 1280;

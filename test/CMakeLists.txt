@@ -1,5 +1,5 @@
 add_executable(main main.cpp)
-target_link_libraries(main PUBLIC vector3d)
+target_link_libraries(main PUBLIC raytracer)
 
 # test vector3d operations
 add_executable(test-vector test-vector3d.cpp)
@@ -23,15 +23,15 @@ add_executable(test-random test-random.cpp)
 target_link_libraries(test-random PRIVATE core)
 
 # test the world by intersection some number of spheres
-add_executable(test-world test-world.cpp)
-target_link_libraries(test-world PRIVATE raytracer)
+# add_executable(test-world test-world.cpp)
+# target_link_libraries(test-world PRIVATE raytracer)
 
 # test materials by path tracing a scene from a given input file
-add_executable(test-materials test-materials.cpp)
-target_link_libraries(test-materials PRIVATE raytracer)
+# add_executable(test-materials test-materials.cpp)
+# target_link_libraries(test-materials PRIVATE raytracer)
 
-add_executable(test-materials-parser test-materials-parser.cpp)
-target_link_libraries(test-materials-parser PRIVATE raytracer)
+# add_executable(test-materials-parser test-materials-parser.cpp)
+# target_link_libraries(test-materials-parser PRIVATE raytracer)
 
 add_executable(test-textures test-textures.cpp)
 target_link_libraries(test-textures PRIVATE raytracer)
