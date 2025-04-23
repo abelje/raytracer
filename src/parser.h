@@ -44,6 +44,7 @@ private:
 
     void parse_sphere(std::stringstream& ss);
     void parse_triangle(std::stringstream& ss);
+    void parse_constant_medium(std::stringstream& ss);
     void parse_rectangle(std::stringstream& ss);
     void parse_mesh(std::stringstream& ss);
 

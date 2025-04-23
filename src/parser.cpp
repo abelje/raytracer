@@ -69,6 +69,7 @@ void Parser::set_parse_map() {
     parse_map["sphere"] = [this](std::stringstream& ss) {parse_sphere(ss);};
     parse_map["triangle"] = [this](std::stringstream& ss) {parse_triangle(ss);};
     parse_map["rectangle"] = [this](std::stringstream& ss) {parse_rectangle(ss);};
+    parse_map["constant_medium"] = [this](std::stringstream& ss) {parse_constant_medium(ss);};
     parse_map["mesh"] = [this](std::stringstream& ss) {parse_mesh(ss);};
     parse_map["output"] = [this](std::stringstream& ss) {parse_output(ss);};
     parse_map["pixels"] = [this](std::stringstream& ss) {parse_pixels(ss);};
@@ -151,6 +152,11 @@ void Parser::setup_parse_material() {
     material_map["glass"] = [](Texture* texture, bool emitting, std::stringstream&) {
         return std::make_unique<Glass>(texture, emitting);
     };
+    material_map["isotropic"] = [](Texture* texture, bool emitting, std::stringstream&) {
+        if () {
+            return std::make_unique<Isotropic>(texture, emitting);
+        }
+    }
 }
 
 void Parser::parse_material(std::stringstream& ss) {
@@ -307,6 +313,22 @@ void Parser::parse_rectangle(std::stringstream& ss) {
     }
     else {
         throw std::runtime_error("Malformed rectangle\nEx: (0 0 0) (10 0 0) 5 material_name");
+    }
+}
+
+void Parser::parse_constant_medium(std::stringstream ss) {
+    // only allows for spherical boundaries
+    Vector3D center;
+    double radius, density;
+    std::string material_name;
+    if(ss >> center >> radius >> density >> material_name) {
+        const Material* material = get_material(material_name);
+        auto boundary = new Sphere{center, radius, material};
+        std::unique_ptr<Object> object = std::make_unique<ConstantMedium> (boundary, density, material);
+        world.add(std::move(object));
+    }
+    else {
+        throw std::runtime_error("Malformed_constant_medium!");
     }
 }
 
