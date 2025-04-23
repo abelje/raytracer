@@ -41,3 +41,6 @@ target_link_libraries(test-triangle PRIVATE raytracer)
 
 add_executable(test-rectangle test-rectangle.cpp)
 target_link_libraries(test-rectangle PRIVATE raytracer)
+
+add_executable(test-bvh test-bvh.cpp)
+target_link_libraries(test-bvh PRIVATE raytracer)

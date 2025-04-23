@@ -13,6 +13,7 @@ add_library(core
         timer.h timer.cpp
         texture.h texture.cpp
         aabb.h aabb.cpp
+        bvh.h bvh.cpp
 )
 
 target_include_directories(core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

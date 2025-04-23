@@ -1,0 +1,24 @@
+# created by generate-triangles.py
+# textures
+texture white solid (1 1 1)
+texture red solid (1 0 0)
+texture triangle-color solid (0.5 0.5 0.5)
+
+# materials
+material white-light diffuse white true
+material red-light diffuse red true
+material triangle lambertian triangle-color false
+
+# lighting
+sphere (0 0 0) 100 white-light
+sphere (-110 0 0) 100 red-light
+
+
+# rendering
+threads 10
+rays 10 10
+camera (-5 -20 15) (0 0 0) (0 0 1) 30
+pixels 1280 720
+output bvh.png
+
+mesh (0 0 0) triangles-100 triangle
