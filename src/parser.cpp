@@ -17,11 +17,14 @@
 #include "checkerboard.h"
 #include "surface-normal.h"
 #include "spiral.h"
+#include "isotropic.h"
 #include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+
+#include "constant_medium.h"
 
 
 Parser::Parser(const std::string& filename)
@@ -153,10 +156,8 @@ void Parser::setup_parse_material() {
         return std::make_unique<Glass>(texture, emitting);
     };
     material_map["isotropic"] = [](Texture* texture, bool emitting, std::stringstream&) {
-        if () {
-            return std::make_unique<Isotropic>(texture, emitting);
-        }
-    }
+        return std::make_unique<Isotropic>(texture, emitting);
+    };
 }
 
 void Parser::parse_material(std::stringstream& ss) {
@@ -316,7 +317,7 @@ void Parser::parse_rectangle(std::stringstream& ss) {
     }
 }
 
-void Parser::parse_constant_medium(std::stringstream ss) {
+void Parser::parse_constant_medium(std::stringstream& ss) {
     // only allows for spherical boundaries
     Vector3D center;
     double radius, density;

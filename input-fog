@@ -1,0 +1,39 @@
+# textures
+texture dark-gray solid (0.3 0.3 0.3)
+texture gray solid (0.5 0.5 0.5)
+texture white solid (1 1 1)
+texture red solid (1 0.1 0)
+
+# materials
+material glass glass white false
+material red lambertian red true
+material floor lambertian gray false
+material light lambertian white true
+material mirror specular white false
+material fog isotropic white false
+
+# objects
+#mesh (0 0 0) pyramid.txt glass
+sphere (0 0 0.7) 0.5 red
+
+constant_medium (0 0 3) 1 0.01 fog
+#sphere (0 0 3) 1 light
+
+# floor
+sphere (0 0 -1000.1) 1000 floor
+
+# light
+# triangle (-4 -4 0) (-4 4 0) (-4 4 4) mirror
+# triangle (-4 -4 0) (-4 4 4) (-4 -4 4) mirror
+# triangle (-3 4.5 0) (3 4 0) (3 4 4) mirror
+# triangle (-3 4.5 0) (-3 4.5 4) (3 4 4) mirror
+
+# sky
+sphere (0 0 1020) 1000 light
+
+# rendering
+threads 30
+rays 10 100
+camera (5 -15 1) (0 0 1) (0 0 1) 45
+pixels 1280 720
+output fog.png

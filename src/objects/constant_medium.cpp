@@ -53,7 +53,7 @@ std::optional<double> ConstantMedium::intersect(const Ray& ray) const {
 }
 
 AABB ConstantMedium::bounding_box() const {
-    return boundary->bounding_box;
+    return boundary->bounding_box();
 }
 
 std::pair<double, double> ConstantMedium::uv(const Hit& hit) const {
