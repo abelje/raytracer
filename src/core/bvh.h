@@ -17,6 +17,9 @@ private:
         Node* right;
         Object* object;
         AABB box;
+
+        Node(AABB box = AABB(Point3D(0,0,0), Point3D(0,0,0)))
+            : left(nullptr), right(nullptr), object(nullptr), box(box) {}
     };
 
 

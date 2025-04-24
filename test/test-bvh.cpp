@@ -109,13 +109,13 @@ Color trace_path(const BVH& bvh, const Ray& ray, int depth) {
     auto [u, v] = object->uv(*hit);
     const Material* material = object->material;
     Color color = material->texture->value(u, v);
-    if (material->emitting) {
-        return color;
-    }
-    // if (material->emitting) { // Makes light sources have more structure
-    // double shading = std::abs(dot(hit->normal, ray.direction));
-    // return color * shading;
+    // if (material->emitting) {
+    //     return color;
     // }
+    if (material->emitting) { // Makes light sources have more structure
+    double shading = std::abs(dot(hit->normal, ray.direction));
+    return color * shading;
+    }
 
     // more bounces!
     Ray scattered = material->scatter(ray, hit.value());

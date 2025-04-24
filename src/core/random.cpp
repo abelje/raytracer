@@ -15,6 +15,11 @@ double random_double(double min, double max) {
     return (max - min) * random_double() + min;
 }
 
+int random_int(int min, int max) {
+    // random_double(min, max) generates [min, max), so add one to max and round down
+    return static_cast<int>(random_double(min, max+1));
+}
+
 Vector3D random_unit_vector() {
     while (true) {
         double x = random_double(-1, 1);
