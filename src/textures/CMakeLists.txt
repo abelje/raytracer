@@ -5,6 +5,7 @@ add_library(textures
   surface-normal.h surface-normal.cpp
   checkerboard.h checkerboard.cpp
   spiral.h spiral.cpp
+  interesting.h interesting.cpp
 )
 target_include_directories(textures PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(textures PUBLIC core image)

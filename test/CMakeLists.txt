@@ -45,5 +45,11 @@ target_link_libraries(test-rectangle PRIVATE raytracer)
 add_executable(test-bvh test-bvh.cpp)
 target_link_libraries(test-bvh PRIVATE raytracer)
 
+add_executable(test-bvh-chart test-bvh-chart.cpp)
+target_link_libraries(test-bvh-chart PRIVATE raytracer)
+
+add_executable(test-world-chart test-world-chart.cpp)
+target_link_libraries(test-world-chart PRIVATE raytracer)
+
 add_executable(test-fog test-fog.cpp)
 target_link_libraries(test-fog PRIVATE raytracer)

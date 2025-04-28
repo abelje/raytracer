@@ -33,11 +33,11 @@ int main(int argc, char* argv[]) {
 
         Pixels pixels = parser.get_pixels();
         Camera camera = parser.get_camera();
-        
+
         int depth = parser.ray_depth;
         int samples = parser.ray_samples;
         int num_threads = parser.num_threads;
-        
+
 
         // Create n-1 images for the additional threads we will launch
         std::vector<Pixels> images;
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
         for (Color& c : pixels.values) {
             c /= num_threads;
         }
-        
+
         pixels.save_png(parser.filename);
         std::cout << "\nWrote " << parser.filename << '\n';
     }
@@ -140,7 +140,7 @@ void render(const BVH& bvh, const Camera& camera, int depth, int samples, int nu
     if (progress) {
         print_progress(ray_num*num_threads, rays_total*num_threads);
     }
-    
+
     for (auto row = 0; row < pixels.rows; ++row) {
 	for (auto col = 0; col < pixels.columns; ++col) {
             Color color{0, 0, 0};
