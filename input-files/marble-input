@@ -1,0 +1,19 @@
+# textures
+texture floor solid (0.8 0.8 0.8)
+
+# materials
+material floor lambertian floor false
+
+# floor
+sphere (0 0 -1000) 1000 floor
+# spheres
+
+
+# light
+sphere (4 -9 4) 1000 light
+# rendering
+threads 8
+rays 10 100
+camera (4 -8 4) (0 0 1) (0 0 1) 90
+pixels 1280 720
+output spheres.png

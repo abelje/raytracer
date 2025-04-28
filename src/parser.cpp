@@ -18,6 +18,7 @@
 #include "surface-normal.h"
 #include "spiral.h"
 #include "isotropic.h"
+#include "marble.h"
 #include <algorithm>
 #include <iostream>
 #include <fstream>
@@ -245,6 +246,9 @@ void Parser::setup_parse_texture() {
         else {
             return std::make_unique<Spiral>(a, b, num_spirals);
         }
+    };
+    texture_map["marble"] = [](std::stringstream&){
+        return std::make_unique<Marble>();
     };
 }
 

@@ -14,6 +14,7 @@ add_library(core
         texture.h texture.cpp
         aabb.h aabb.cpp
         bvh.h bvh.cpp
+        noise.h noise.cpp
 )
 
 target_include_directories(core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
