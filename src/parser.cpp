@@ -381,6 +381,38 @@ void Parser::parse_mesh(std::stringstream& ss) {
 
 }
 
+void Parser::parse_obj(std::stringstream& ss) {
+    std::string command;
+    ss >> command;
+
+    std::ifstream input{filename};
+    if(!input) {
+        throw std::runtime_error("Cannot open mesh file: " + filename);
+    }
+
+    std::vector<Point3D> vertices;
+    if (command == "v") {
+        for (Point3D vertex; input >> vertex;) {
+            vertices.push_back(vertex);
+        }
+    }
+    if (command == "f") {
+        // Access vertices and find point and that number in the vector
+        std::vector<Point3D> face;
+        // Point3D input;
+        for (Point3D vertex; input >> vertex;) {
+            face.push_back(vertex);
+        }
+        if (face.size() < 3) {
+            throw std::runtime_error("Face must contain at least 3 vertices");
+        }
+        if (face.size() == 3) {
+            // create a triangle
+
+        }
+    }
+}
+
 void Parser::parse_camera(std::stringstream& ss) {
     if (ss >> camera_position >> camera_target >> camera_up >> camera_fov) {
         found_camera = true;
