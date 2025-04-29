@@ -429,4 +429,9 @@ open mp parallel
 
 open mpi
 
-## Textures Assignment 
+## BVH Assignment
+
+Used this command on a custom program to print the output to a csv file:
+
+```../cmake-build-debug/test/test-bvh-chart.exe input-spheres-1000 > world-runtime.csv```
+

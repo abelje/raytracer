@@ -25,7 +25,7 @@ Color Marble::value(double u, double v) const {
     y *= 5;
     z *= 5;
 
-    // double noise = Perlin::turbulence(x, y, z, 5); // noise
-    // return Color{0.5, 0.5, 0.5} * (noise + 1);
+    double noise = Perlin::turbulence(x, y, z, 5); // noise
+    return Color{0.5, 0.5, 0.5} * (noise + 1);
 
 }
