@@ -403,10 +403,11 @@ void Parser::parse_obj(std::stringstream& ss) {
         std::string command;
         nl >> command;
 
-
         if (command == "v") {
             Point3D vertex;
-            nl >> vertex;
+            double x, y, z;
+            nl >> x >> y >> z;
+            vertex = {x, y, z};
             vertices.push_back(vertex + position);
         }
         else if (command == "f") {

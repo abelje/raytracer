@@ -21,7 +21,7 @@ rectangle (-2 5 0) (4 3 0) 3 reflect
 # mesh
 # mesh (0 0 0) box glass
 # OBJ
-obj (0 0 2) triangle.obj tri
+obj (0 0 1) triangle.obj tri
 # floor
 sphere (0 0 -1000) 1000 floor
 # light
