@@ -75,6 +75,7 @@ void Parser::set_parse_map() {
     parse_map["rectangle"] = [this](std::stringstream& ss) {parse_rectangle(ss);};
     parse_map["constant_medium"] = [this](std::stringstream& ss) {parse_constant_medium(ss);};
     parse_map["mesh"] = [this](std::stringstream& ss) {parse_mesh(ss);};
+    parse_map["obj"] = [this](std::stringstream& ss) {parse_obj(ss);};
     parse_map["output"] = [this](std::stringstream& ss) {parse_output(ss);};
     parse_map["pixels"] = [this](std::stringstream& ss) {parse_pixels(ss);};
     parse_map["rays"] = [this](std::stringstream& ss) {parse_rays(ss);};
@@ -382,35 +383,53 @@ void Parser::parse_mesh(std::stringstream& ss) {
 }
 
 void Parser::parse_obj(std::stringstream& ss) {
-    std::string command;
-    ss >> command;
+    Vector3D position;
+    std::string filename, material_name;
+    if (!(ss >> position >> filename >> material_name)) {
+        throw std::runtime_error("Malformed obj file\nEx: (0 0 0) obj_file material_name");
+    }
+
+    const Material* material = get_material(material_name);
 
     std::ifstream input{filename};
     if(!input) {
         throw std::runtime_error("Cannot open mesh file: " + filename);
     }
 
+    std::string line;
     std::vector<Point3D> vertices;
-    if (command == "v") {
-        for (Point3D vertex; input >> vertex;) {
-            vertices.push_back(vertex);
-        }
-    }
-    if (command == "f") {
-        // Access vertices and find point and that number in the vector
-        std::vector<Point3D> face;
-        // Point3D input;
-        for (Point3D vertex; input >> vertex;) {
-            face.push_back(vertex);
-        }
-        if (face.size() < 3) {
-            throw std::runtime_error("Face must contain at least 3 vertices");
-        }
-        if (face.size() == 3) {
-            // create a triangle
+    while (std::getline(input, line)) {
+        std::stringstream nl(line);
+        std::string command;
+        nl >> command;
 
+
+        if (command == "v") {
+            Point3D vertex;
+            nl >> vertex;
+            vertices.push_back(vertex + position);
+        }
+        else if (command == "f") {
+            // Access vertices and find point and that number in the vector
+            std::vector<int> face;
+            // Point3D input;
+            int x;
+            while (nl >> x) {
+                face.push_back(x-1);
+            }
+            if (face.size() < 3) {
+                throw std::runtime_error("Face must contain at least 3 vertices");
+            }
+            if (face.size() == 3) {
+                // create a triangle
+                std::unique_ptr<Object> triangle = std::make_unique<Triangle>(vertices.at(face.at(0)), vertices.at(face.at(1)),
+                                                                                vertices.at(face.at(2)), material);
+                world.add(std::move(triangle));
+            }
         }
     }
+
+
 }
 
 void Parser::parse_camera(std::stringstream& ss) {
