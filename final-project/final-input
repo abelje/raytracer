@@ -21,7 +21,7 @@ rectangle (-2 5 0) (4 3 0) 3 reflect
 # mesh
 # mesh (0 0 0) box glass
 # OBJ
-obj (0 0 1) triangle.obj tri
+obj (0 0 1) cube.obj tri
 # floor
 sphere (0 0 -1000) 1000 floor
 # light
@@ -31,4 +31,4 @@ threads 12
 rays 10 100
 camera (2 -8 4) (1.5 0 1) (0 0 1) 90
 pixels 1280 720
-output triangle.png
+output obj.png

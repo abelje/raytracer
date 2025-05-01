@@ -1,0 +1,20 @@
+# textures
+texture white solid (1 1 1)
+texture marble marble
+
+# materials
+material light lambertian white true
+material marble lambertian marble false
+
+# objects
+sphere (1 1 1) 1 marble
+
+# lighting
+sphere (1020 0 0) 1010 light
+
+# rendering
+threads 10
+rays 10 100
+camera (5 -15 1) (0 0 1) (0 0 1) 35
+pixels 1280 720
+output marble.png

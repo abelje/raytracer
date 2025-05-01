@@ -393,7 +393,7 @@ void Parser::parse_obj(std::stringstream& ss) {
 
     std::ifstream input{filename};
     if(!input) {
-        throw std::runtime_error("Cannot open mesh file: " + filename);
+        throw std::runtime_error("Cannot open obj file: " + filename);
     }
 
     std::string line;
@@ -402,21 +402,30 @@ void Parser::parse_obj(std::stringstream& ss) {
         std::stringstream nl(line);
         std::string command;
         nl >> command;
+        if (command == "#") { // skip line
+            continue;
+        }
 
         if (command == "v") {
             Point3D vertex;
             double x, y, z;
-            nl >> x >> y >> z;
-            vertex = {x, y, z};
-            vertices.push_back(vertex + position);
+            if (nl >> x >> y >> z) {
+                vertex = {x, y, z};
+                vertices.push_back(vertex + position);
+            }
+            // ignore other v_ commands
         }
         else if (command == "f") {
             // Access vertices and find point and that number in the vector
             std::vector<int> face;
             // Point3D input;
-            int x;
+            std::string x;
             while (nl >> x) {
-                face.push_back(x-1);
+                if (x == "/") {
+                    continue;
+                }
+
+                face.push_back(std::stoi(x)-1);
             }
             if (face.size() < 3) {
                 throw std::runtime_error("Face must contain at least 3 vertices");
@@ -427,10 +436,12 @@ void Parser::parse_obj(std::stringstream& ss) {
                                                                                 vertices.at(face.at(2)), material);
                 world.add(std::move(triangle));
             }
+            if (face.size() == 4) {
+                std::unique_ptr<Object> rectangle = std::make_unique<Rectangle>(vertices.at(face.at(0)), vertices.at(face.at(1)), vertices.at(face.at(2)), vertices.at(face.at(3)), material);
+                world.add(std::move(rectangle));
+            }
         }
     }
-
-
 }
 
 void Parser::parse_camera(std::stringstream& ss) {

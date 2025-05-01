@@ -12,6 +12,9 @@ Rectangle::Rectangle(const Point3D& bottom_left, const Point3D& bottom_right, do
     bottom{{bottom_right.x, bottom_right.y, bottom_right.z + width},{bottom_left.x, bottom_left.y,
         bottom_left.z + width},bottom_right, material} {}
 
+Rectangle::Rectangle(const Point3D& bottom_left, const Point3D& bottom_right, const Point3D& top_left, const Point3D& top_right, const Material *material)
+    :Object{material}, top{bottom_left, bottom_right, top_right, material}, bottom{top_left, top_right, bottom_left, material} {}
+
 AABB Rectangle::bounding_box() const {
     double xmin = std::min(top.vertex0.x, std::min(top.vertex1.x, top.vertex2.x));
     double xmax = std::max(top.vertex0.x, std::max(top.vertex1.x, top.vertex2.x));
