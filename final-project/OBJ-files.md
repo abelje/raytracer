@@ -272,3 +272,95 @@ And the image generates the same:
 ## 3D Models
 This Website has many created .obj files: [Common-3d-test-models](https://github.com/alecjacobson/common-3d-test-models?tab=readme-ov-file).
 
+First test object: [happy.obj](https://github.com/alecjacobson/common-3d-test-models/blob/master/data/happy.obj)
+
+This is a Monk like figurine. The 3d model looks like this: 
+
+![happy.png](happy.png)
+
+When rendered in the raytracer, the y axis is up for the figure, so flipping the camera's orientation we get:
+
+![happy-obj](happy-obj.png)
+Input file: 
+```
+# Image made using triangles
+# background textures
+texture light solid (1 1 1)
+texture floor solid (0.8 0.8 0.8)
+# textures
+texture grey solid (0.5 0.5 0.5)
+texture checker checkerboard (1 0 0) (1 1 1) 16
+texture skyblue solid (0.53 0.81 0.92)
+# background material
+material light diffuse light true
+material floor lambertian floor false
+# material
+material checker lambertian checker false
+material glass glass grey false
+material reflect specular light false
+material tri lambertian skyblue false
+# sphere
+# sphere (0 0 1) 0.5 checker
+# rectangle
+# rectangle (-2 5 0) (4 3 0) 3 reflect
+# mesh
+# mesh (0 0 0) box glass
+# OBJ
+obj (0 0 3) happy.obj tri
+# floor
+sphere (0 0 -1000) 1000 floor
+# light
+# rectangle (-4 -2 0) (-4 3 0) 3 light
+sphere (2 -8 4) 100 light
+# rendering
+threads 12
+rays 10 100
+camera (0 0 0) (0 0 3) (0 1 0) 45
+pixels 1280 720
+output happy-obj.png
+```
+
+Maybe I can add a scaling factor to the parser to scale up the file:
+
+```c++
+if (command == "v") {
+            Point3D vertex;
+            double x, y, z;
+            if (nl >> x >> y >> z) {
+                vertex = {x * scale, y * scale, z * scale};
+                vertices.push_back(vertex + position);
+            }
+            // ignore other v_ commands
+        }
+```
+I accomplished it by passing in a scale, which defaults to 1, and multiplying the parsed scale factor by the x, y, and z coordinates.
+
+Fixing the orientation of the object
+
+I want the object to face in the normal up direction, z, and the object is in the y direction as up. I can add another parsed command to switch the axis.
+
+To do this, I have to flip the z and y axis in the parser.
+```c++
+if (command == "v") {
+            Point3D vertex;
+            double x, y, z;
+            if (nl >> x >> y >> z) {
+                if (object_up == "y") { // y is up for the object
+                    vertex = {x * scale, -z * scale, y * scale};
+                }
+                else if (object_up == "x") { // x is up for the object
+                    vertex = {-z * scale, y * scale, x * scale};
+                }
+                else {
+                    vertex = {x * scale, y * scale, z * scale};
+                }
+                vertices.push_back(vertex + position);
+            }
+```
+I added the possibility for x being up as well, but it may need some fine tuning. I had to negate the y coordinate of the y is up portion because it would generate facing away from you.
+The final image looks like this: 
+![scaled-happy](scaled-happy-obj.png)
+
+The current build cannot generate the dragon because of an overflow error. It has over 10000 faces.
+
+![dragon](xyzrgb_dragon.png)

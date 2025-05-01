@@ -389,6 +389,11 @@ void Parser::parse_obj(std::stringstream& ss) {
         throw std::runtime_error("Malformed obj file\nEx: (0 0 0) obj_file material_name");
     }
 
+    double scale = 1;
+    std::string object_up;
+    ss >> scale >> object_up;
+
+
     const Material* material = get_material(material_name);
 
     std::ifstream input{filename};
@@ -410,7 +415,15 @@ void Parser::parse_obj(std::stringstream& ss) {
             Point3D vertex;
             double x, y, z;
             if (nl >> x >> y >> z) {
-                vertex = {x, y, z};
+                if (object_up == "y") { // y is up for the object
+                    vertex = {x * scale, -z * scale, y * scale};
+                }
+                else if (object_up == "x") { // x is up for the object
+                    vertex = {-z * scale, y * scale, x * scale};
+                }
+                else {
+                    vertex = {x * scale, y * scale, z * scale};
+                }
                 vertices.push_back(vertex + position);
             }
             // ignore other v_ commands
@@ -424,7 +437,9 @@ void Parser::parse_obj(std::stringstream& ss) {
                 if (x == "/") {
                     continue;
                 }
-
+                if (std::stoi(x) <= 0 || std::stoi(x) > vertices.size()) {
+                    throw std::overflow_error("Invalid face index: " + std::to_string(std::stoi(x)));
+                }
                 face.push_back(std::stoi(x)-1);
             }
             if (face.size() < 3) {
