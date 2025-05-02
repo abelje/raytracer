@@ -1,0 +1,29 @@
+# Final Project Image
+# lightsaber textures
+texture light solid (1 1 1)
+texture lightsaber solid (0 0 1)
+texture hilt solid (0.5 0.5 0.5)
+# fog texture
+texture mist solid (0.5 0.5 0.5)
+# lightsaber material
+material light diffuse light true
+material lightsaber diffuse lightsaber true
+material hilt specular hilt false
+# fog material
+material mist isotropic mist false
+# fog spheres
+# sphere (0 78 56) 50 mist
+sphere (0 1100 56) 1000 mist
+# lightsaber objs
+obj (0 0 0) 25_05_02_01_13_14_610.obj hilt 1
+obj (0 6 12) blade.obj lightsaber 1
+obj (0 -20 12) blade.obj lightsaber 5
+# obj (0 20 12) blade.obj lightsaber 5
+# sphere
+# sphere (0 -10 0) 100 light
+# rendering
+threads 12
+rays 5 10000
+camera (0 -10 5) (0 0 5) (0 0 1) 90
+pixels 720 1280
+output lightsaber-fog-10000.png

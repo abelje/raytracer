@@ -394,7 +394,7 @@ void Parser::parse_obj(std::stringstream& ss) {
     ss >> scale >> object_up;
 
 
-    const Material* material = get_material(material_name);
+    Material* material = get_material(material_name);
 
     std::ifstream input{filename};
     if(!input) {
@@ -403,11 +403,13 @@ void Parser::parse_obj(std::stringstream& ss) {
 
     std::string line;
     std::vector<Point3D> vertices;
+    std::vector<Vector3D> normals;
+    std::vector<Vector3D> tex_coords;
     while (std::getline(input, line)) {
         std::stringstream nl(line);
         std::string command;
         nl >> command;
-        if (command == "#") { // skip line
+        if (command == "#" || command == "g") { // skip line
             continue;
         }
 
@@ -428,19 +430,65 @@ void Parser::parse_obj(std::stringstream& ss) {
             }
             // ignore other v_ commands
         }
+        if (command == "vn") {
+            Point3D vertex;
+            double x, y, z;
+            if (nl >> x >> y >> z) {
+                if (object_up == "y") { // y is up for the object
+                    vertex = {x * scale, -z * scale, y * scale};
+                }
+                else if (object_up == "x") { // x is up for the object
+                    vertex = {-z * scale, y * scale, x * scale};
+                }
+                else {
+                    vertex = {x * scale, y * scale, z * scale};
+                }
+                normals.push_back(vertex + position);
+            }
+        }
         else if (command == "f") {
             // Access vertices and find point and that number in the vector
             std::vector<int> face;
+            std::vector<int> f_normals;
+            std::vector<int> f_tex_coords;
             // Point3D input;
-            std::string x;
-            while (nl >> x) {
-                if (x == "/") {
-                    continue;
+            std::string token;
+
+            while (nl >> token) {
+                std::istringstream token_stream(token);
+                std::string v_str, vt_str, vn_str;
+
+                std::getline(token_stream, v_str, '/');   // v
+                std::getline(token_stream, vt_str, '/');  // vt (may be empty)
+                std::getline(token_stream, vn_str, '/');  // vn (may be empty)
+
+                int v_idx = -1;
+                if (!v_str.empty()) {
+                    v_idx = std::stoi(v_str) - 1;
                 }
-                if (std::stoi(x) <= 0 || std::stoi(x) > vertices.size()) {
-                    throw std::overflow_error("Invalid face index: " + std::to_string(std::stoi(x)));
+                int vn_idx = -1;
+                if (!vn_str.empty()) {
+                    vn_idx = std::stoi(vn_str) - 1;
                 }
-                face.push_back(std::stoi(x)-1);
+
+                int vt_idx = -1;
+                if (!vt_str.empty()) {
+                    vt_idx = std::stoi(vt_str) - 1;
+                }
+
+                if (v_idx < 0 || v_idx >= vertices.size()) {
+                    throw std::runtime_error("Invalid vertex index in face");
+                }
+
+                face.push_back(v_idx);
+
+                if (vn_idx != -1) {
+                    f_normals.push_back(vn_idx);
+                }
+
+                if (vt_idx != -1) {
+                    f_tex_coords.push_back(vt_idx);
+                }
             }
             if (face.size() < 3) {
                 throw std::runtime_error("Face must contain at least 3 vertices");
@@ -453,7 +501,22 @@ void Parser::parse_obj(std::stringstream& ss) {
             }
             if (face.size() == 4) {
                 std::unique_ptr<Object> rectangle = std::make_unique<Rectangle>(vertices.at(face.at(0)), vertices.at(face.at(1)), vertices.at(face.at(2)), vertices.at(face.at(3)), material);
-                world.add(std::move(rectangle));
+                 world.add(std::move(rectangle));
+            }
+            // else {
+            //     std::cout << "No face\n";
+            // }
+            // fan triangulation
+            if (face.size() > 4) {
+                for (int i = 1; i < face.size() - 1; ++i) {
+                    std::unique_ptr<Object> triangle = std::make_unique<Triangle>(
+                        vertices.at(face.at(0)),      // first vertex of the polygon
+                        vertices.at(face.at(i)),      // current vertex
+                        vertices.at(face.at(i + 1)),  // next vertex
+                        material
+                    );
+                    world.add(std::move(triangle));
+                }
             }
         }
     }
@@ -472,7 +535,9 @@ void Parser::parse_rays(std::stringstream& ss) {
     if (ss >> ray_depth >> ray_samples) {
         found_rays = true;
     }
-
+    if (num_threads >= ray_samples) {
+        throw std::runtime_error("Number of threads must be equal or greater than the samples!");
+    }
 }
 void Parser::parse_pixels(std::stringstream& ss) {
     if (ss >> columns >> rows) {

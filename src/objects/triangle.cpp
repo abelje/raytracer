@@ -8,6 +8,14 @@ Triangle::Triangle(const Point3D& vertex0, const Point3D& vertex1, const Point3D
     :Object{material}, vertex0 {vertex0}, vertex1{vertex1}, vertex2{vertex2}, edge1{vertex1-vertex0},
     edge2{vertex2-vertex0}, normal{unit(cross(edge1, edge2))} {}
 
+Triangle::Triangle(const Point3D& vertex0, const Point3D& vertex1, const Point3D& vertex2,
+          Vector3D& n0,  Vector3D& n1, Vector3D& n2,
+         const Material* material)
+    : Object{material}, vertex0{vertex0}, vertex1{vertex1}, vertex2{vertex2},
+      edge1{vertex1 - vertex0}, edge2{vertex2 - vertex0},
+      normal{unit(cross(edge1, edge2))},
+      n0{n0}, n1{n1}, n2{n2}, has_vertex_normals{true} {}
+
 AABB Triangle::bounding_box() const {
     double xmin = std::min(vertex0.x, std::min(vertex1.x, vertex2.x));
     double xmax = std::max(vertex0.x, std::max(vertex1.x, vertex2.x));
@@ -43,7 +51,6 @@ std::optional<double> Triangle::intersect(const Ray& ray) const {
     if (v < 0.0 || (u + v) > 1.0) {
         return {};
     }
-
     double t = f * dot(edge2, q);
     if (t > Constants::epsilon) {
         return t;

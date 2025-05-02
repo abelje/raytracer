@@ -364,3 +364,32 @@ The final image looks like this:
 The current build cannot generate the dragon because of an overflow error. It has over 10000 faces.
 
 ![dragon](xyzrgb_dragon.png)
+
+Apparently if you call rays 10 10 in the parser file, it crashes
+
+[MIT](https://groups.csail.mit.edu/graphics/classes/6.837/F03/models/)
+
+I got the pumpkin, teapot, and teddybear from the above website. 
+
+Stl to OBJ website: [imagetostl.com](https://imagetostl.com/convert/file/stl/to/obj#convert)
+Reset OBJ by inputing and exporting on this website: [womp](https://beta.womp.com/)
+## Future improvements
+
+```C++
+        std::ifstream material_input;
+        if (command == "mtllib") {
+            std::string material_file;
+            nl >> material_file;
+            material_input.open(material_file);
+            if(!material_input) {
+                throw std::runtime_error("Cannot open mtl file: " + material_file);
+            }
+        }
+
+        if (command == "usemtl") {
+            std::string color;
+            nl >> color;
+            material = std::find(material_input.beg(), material_input.end(), color);
+        }
+
+```
