@@ -23,7 +23,7 @@ obj (0 -20 12) blade.obj lightsaber 5
 # sphere (0 -10 0) 100 light
 # rendering
 threads 12
-rays 5 10000
+rays 5 5000
 camera (0 -10 5) (0 0 5) (0 0 1) 90
 pixels 720 1280
-output lightsaber-fog-10000.png
+output lightsaber-fog-5000.png
