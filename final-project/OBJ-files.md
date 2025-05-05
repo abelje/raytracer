@@ -376,7 +376,7 @@ Stl to OBJ website: [imagetostl.com](https://imagetostl.com/convert/file/stl/to/
 Reset OBJ by inputing and exporting on this website: [womp](https://beta.womp.com/)
 
 ## Final Render:
-
+This render took an hour. 
 ![lightsaber-fog-5000](lightsaber-fog-5000.png)
 
 ## Future improvements
