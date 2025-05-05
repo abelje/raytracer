@@ -375,11 +375,190 @@ Lightsaber stl website: [thingiverse.com](https://www.thingiverse.com/thing:4074
 Stl to OBJ website: [imagetostl.com](https://imagetostl.com/convert/file/stl/to/obj#convert)
 Reset OBJ by inputing and exporting on this website: [womp](https://beta.womp.com/)
 
+## Final Code
+```c++
+void Parser::parse_obj(std::stringstream& ss) {
+    Vector3D position;
+    std::string filename, material_name;
+    if (!(ss >> position >> filename >> material_name)) {
+        throw std::runtime_error("Malformed obj file\nEx: (0 0 0) obj_file material_name");
+    }
+
+    double scale = 1;
+    std::string object_up;
+    ss >> scale >> object_up;
+
+
+    Material* material = get_material(material_name);
+
+    std::ifstream input{filename};
+    if(!input) {
+        throw std::runtime_error("Cannot open obj file: " + filename);
+    }
+
+    std::string line;
+    std::vector<Point3D> vertices;
+    std::vector<Vector3D> normals;
+    std::vector<Vector3D> tex_coords;
+    while (std::getline(input, line)) {
+        std::stringstream nl(line);
+        std::string command;
+        nl >> command;
+        if (command == "#" || command == "g") { // skip line
+            continue;
+        }
+
+        if (command == "v") {
+            Point3D vertex;
+            double x, y, z;
+            if (nl >> x >> y >> z) {
+                if (object_up == "y") { // y is up for the object
+                    vertex = {x * scale, -z * scale, y * scale};
+                }
+                else if (object_up == "x") { // x is up for the object
+                    vertex = {-z * scale, y * scale, x * scale};
+                }
+                else {
+                    vertex = {x * scale, y * scale, z * scale};
+                }
+                vertices.push_back(vertex + position);
+            }
+            // ignore other v_ commands
+        }
+        if (command == "vn") {
+            Point3D vertex;
+            double x, y, z;
+            if (nl >> x >> y >> z) {
+                if (object_up == "y") { // y is up for the object
+                    vertex = {x * scale, -z * scale, y * scale};
+                }
+                else if (object_up == "x") { // x is up for the object
+                    vertex = {-z * scale, y * scale, x * scale};
+                }
+                else {
+                    vertex = {x * scale, y * scale, z * scale};
+                }
+                normals.push_back(vertex + position);
+            }
+        }
+        else if (command == "f") {
+            // Access vertices and find point and that number in the vector
+            std::vector<int> face;
+            std::vector<int> f_normals;
+            std::vector<int> f_tex_coords;
+            // Point3D input;
+            std::string token;
+
+            while (nl >> token) {
+                std::istringstream token_stream(token);
+                std::string v_str, vt_str, vn_str;
+
+                std::getline(token_stream, v_str, '/');   // v
+                std::getline(token_stream, vt_str, '/');  // vt (may be empty)
+                std::getline(token_stream, vn_str, '/');  // vn (may be empty)
+
+                int v_idx = -1;
+                if (!v_str.empty()) {
+                    v_idx = std::stoi(v_str) - 1;
+                }
+                int vn_idx = -1;
+                if (!vn_str.empty()) {
+                    vn_idx = std::stoi(vn_str) - 1;
+                }
+
+                int vt_idx = -1;
+                if (!vt_str.empty()) {
+                    vt_idx = std::stoi(vt_str) - 1;
+                }
+
+                if (v_idx < 0 || v_idx >= vertices.size()) {
+                    throw std::runtime_error("Invalid vertex index in face");
+                }
+
+                face.push_back(v_idx);
+
+                if (vn_idx != -1) {
+                    f_normals.push_back(vn_idx);
+                }
+
+                if (vt_idx != -1) {
+                    f_tex_coords.push_back(vt_idx);
+                }
+            }
+            if (face.size() < 3) {
+                throw std::runtime_error("Face must contain at least 3 vertices");
+            }
+            if (face.size() == 3) {
+                // create a triangle
+                std::unique_ptr<Object> triangle = std::make_unique<Triangle>(vertices.at(face.at(0)), vertices.at(face.at(1)),
+                                                                                vertices.at(face.at(2)), material);
+                world.add(std::move(triangle));
+            }
+            if (face.size() == 4) {
+                std::unique_ptr<Object> rectangle = std::make_unique<Rectangle>(vertices.at(face.at(0)), vertices.at(face.at(1)), vertices.at(face.at(2)), vertices.at(face.at(3)), material);
+                 world.add(std::move(rectangle));
+            }
+            // else {
+            //     std::cout << "No face\n";
+            // }
+            // fan triangulation
+            if (face.size() > 4) {
+                for (int i = 1; i < face.size() - 1; ++i) {
+                    std::unique_ptr<Object> triangle = std::make_unique<Triangle>(
+                        vertices.at(face.at(0)),      // first vertex of the polygon
+                        vertices.at(face.at(i)),      // current vertex
+                        vertices.at(face.at(i + 1)),  // next vertex
+                        material
+                    );
+                    world.add(std::move(triangle));
+                }
+            }
+        }
+    }
+}
+```
+
 ## Final Render:
 This render took an hour. 
 ![lightsaber-fog-5000](lightsaber-fog-5000.png)
 
+```
+# Final Project Image
+# lightsaber textures
+texture light solid (1 1 1)
+texture lightsaber solid (0 0 1)
+texture hilt solid (0.5 0.5 0.5)
+# fog texture
+texture mist solid (0.5 0.5 0.5)
+# lightsaber material
+material light diffuse light true
+material lightsaber diffuse lightsaber true
+material hilt specular hilt false
+# fog material
+material mist isotropic mist false
+# fog spheres
+# sphere (0 78 56) 50 mist
+sphere (0 1100 56) 1000 mist
+# lightsaber objs
+obj (0 0 0) 25_05_02_01_13_14_610.obj hilt 1
+obj (0 6 12) blade.obj lightsaber 1
+obj (0 -20 12) blade.obj lightsaber 5
+# obj (0 20 12) blade.obj lightsaber 5
+# sphere
+# sphere (0 -10 0) 100 light
+# rendering
+threads 12
+rays 5 5000
+camera (0 -10 5) (0 0 5) (0 0 1) 90
+pixels 720 1280
+output lightsaber-fog-5000.png
+```
+
+![white](lightsaber-white.png)
+
 ## Future improvements
+
+Using more of the material input files and utilizing the incorporated texture coordinates and normals.
 
 ```C++
         std::ifstream material_input;
